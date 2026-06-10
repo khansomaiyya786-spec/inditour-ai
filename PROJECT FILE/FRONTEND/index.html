@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IndiTour AI — Explore Incredible India</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--saffron:#FF6B00;--deep-saffron:#E65100;--gold:#FFC107;--teal:#006064;--maroon:#880E4F;--night:#07071A;--card-bg:rgba(255,255,255,0.05);--text-light:#FFF8E7;--text-muted:rgba(255,248,231,0.58);--border-glow:rgba(255,193,7,0.22);}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Rajdhani',sans-serif;background:var(--night);color:var(--text-light);overflow-x:hidden;}
+
+/* NAVBAR */
+.navbar{position:fixed;top:0;width:100%;z-index:1000;background:rgba(7,7,26,0.94);backdrop-filter:blur(22px);border-bottom:1px solid var(--border-glow);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:62px;transition:background 0.4s;}
+.logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;background:linear-gradient(135deg,#FF6B00,#FFC107,#FF9800);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 3s linear infinite;cursor:pointer;display:flex;align-items:center;gap:0.45rem;}
+@keyframes shimmer{to{background-position:200% center;}}
+.nav-links{display:flex;gap:0.25rem;list-style:none;}
+.nav-links a{color:var(--text-muted);text-decoration:none;padding:0.38rem 0.8rem;border-radius:20px;font-size:0.82rem;font-weight:700;letter-spacing:0.4px;transition:all 0.3s;cursor:pointer;white-space:nowrap;}
+.nav-links a:hover,.nav-links a.active{color:var(--gold);background:rgba(255,193,7,0.1);}
+.nav-auth{display:flex;gap:0.5rem;}
+.btn-nav{padding:0.38rem 1rem;border-radius:20px;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:'Rajdhani',sans-serif;transition:all 0.3s;border:none;white-space:nowrap;}
+.btn-login{background:transparent;border:1px solid var(--border-glow);color:var(--gold);}
+.btn-login:hover{background:rgba(255,193,7,0.12);}
+.btn-register{background:linear-gradient(135deg,#FF6B00,#880E4F);color:#fff;}
+.btn-register:hover{transform:translateY(-1px);box-shadow:0 4px 18px rgba(255,107,0,0.4);}
+.tricolor{height:4px;background:linear-gradient(90deg,#FF9933 33.33%,#fff 33.33%,#fff 66.66%,#138808 66.66%);position:fixed;top:62px;width:100%;z-index:999;}
+
+/* PAGES */
+.page{display:none;min-height:100vh;padding-top:66px;}
+.page.active{display:block;}
+
+/* HERO */
+.hero{position:relative;height:calc(100vh - 66px);overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.hero-bg-slider{position:absolute;inset:0;}
+.hero-slide{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity 1.5s ease;transform:scale(1.06);transition:opacity 1.6s ease,transform 8s ease;}
+.hero-slide.active{opacity:1;transform:scale(1);}
+.hero-vignette{position:absolute;inset:0;background:linear-gradient(135deg,rgba(7,7,26,0.72) 0%,rgba(7,7,26,0.35) 50%,rgba(7,7,26,0.78) 100%);}
+.hero-particles{position:absolute;inset:0;pointer-events:none;z-index:1;}
+.particle{position:absolute;border-radius:50%;animation:floatUp linear infinite;}
+@keyframes floatUp{0%{transform:translateY(110vh) rotate(0deg);opacity:0;}10%{opacity:1;}90%{opacity:0.7;}100%{transform:translateY(-60px) rotate(720deg);opacity:0;}}
+.hero-content{position:relative;z-index:2;text-align:center;padding:2rem;}
+.hero-badge{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(255,193,7,0.1);border:1px solid rgba(255,193,7,0.3);color:var(--gold);padding:0.35rem 1.2rem;border-radius:20px;font-size:0.73rem;letter-spacing:2.5px;font-weight:700;margin-bottom:1.4rem;animation:fadeUp 0.8s ease both;}
+.hero-badge span{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:blink 1.4s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.2;}}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,6vw,5rem);font-weight:900;line-height:1.08;animation:fadeUp 0.8s 0.15s ease both;}
+.hero-title .grad{display:block;background:linear-gradient(135deg,#FF9933,#FF6B00,#FFC107,#FF6B00);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 4s linear infinite;}
+.hero-sub{font-size:1.05rem;color:var(--text-muted);max-width:540px;margin:1.1rem auto 2rem;line-height:1.75;animation:fadeUp 0.8s 0.3s ease both;}
+.hero-cta{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;animation:fadeUp 0.8s 0.45s ease both;}
+.hero-dots{position:absolute;bottom:1.5rem;left:50%;transform:translateX(-50%);display:flex;gap:0.5rem;z-index:3;}
+.hdot{width:8px;height:8px;border-radius:4px;background:rgba(255,255,255,0.3);cursor:pointer;transition:all 0.3s;}
+.hdot.active{width:22px;background:var(--gold);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:none;}}
+
+/* SCROLL REVEAL */
+.reveal{opacity:0;transform:translateY(36px);transition:opacity 0.75s ease,transform 0.75s ease;}
+.reveal.visible{opacity:1;transform:none;}
+.reveal-left{opacity:0;transform:translateX(-36px);transition:opacity 0.7s ease,transform 0.7s ease;}
+.reveal-left.visible{opacity:1;transform:none;}
+.reveal-right{opacity:0;transform:translateX(36px);transition:opacity 0.7s ease,transform 0.7s ease;}
+.reveal-right.visible{opacity:1;transform:none;}
+
+/* BUTTONS */
+.btn-primary{background:linear-gradient(135deg,var(--saffron),var(--deep-saffron));color:#fff;border:none;padding:0.82rem 1.9rem;border-radius:50px;font-size:0.96rem;font-weight:700;font-family:'Rajdhani',sans-serif;cursor:pointer;transition:all 0.3s;letter-spacing:0.5px;box-shadow:0 4px 20px rgba(255,107,0,0.25);}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(255,107,0,0.45);}
+.btn-secondary{background:transparent;border:1.5px solid rgba(255,193,7,0.4);color:var(--gold);padding:0.82rem 1.9rem;border-radius:50px;font-size:0.96rem;font-weight:700;font-family:'Rajdhani',sans-serif;cursor:pointer;transition:all 0.3s;}
+.btn-secondary:hover{background:rgba(255,193,7,0.1);border-color:var(--gold);transform:translateY(-2px);}
+
+/* STATS */
+.stats-strip{background:rgba(255,255,255,0.02);border-top:1px solid var(--border-glow);border-bottom:1px solid var(--border-glow);padding:2rem;}
+.stats-inner{display:flex;gap:2rem;justify-content:center;flex-wrap:wrap;}
+.stat-item{text-align:center;}
+.stat-num{font-family:'Playfair Display',serif;font-size:2.1rem;font-weight:900;background:linear-gradient(135deg,#FF6B00,#FFC107);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.stat-label{font-size:0.73rem;color:var(--text-muted);letter-spacing:1.5px;margin-top:0.2rem;}
+
+/* SECTION */
+.section{padding:5rem 2rem;}
+.section-header{text-align:center;margin-bottom:3rem;}
+.section-tag{display:inline-block;color:var(--saffron);font-size:0.7rem;letter-spacing:3px;font-weight:700;margin-bottom:0.7rem;}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(1.7rem,3vw,2.6rem);font-weight:900;line-height:1.2;}
+.section-title em{font-style:italic;background:linear-gradient(135deg,#FF6B00,#FFC107);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+
+/* CATEGORY CARDS */
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:1rem;max-width:900px;margin:0 auto;}
+.cat-card{background:var(--card-bg);border:1px solid var(--border-glow);border-radius:16px;padding:1.5rem 0.8rem;text-align:center;cursor:pointer;transition:all 0.35s;}
+.cat-card:hover{background:rgba(255,193,7,0.09);border-color:var(--gold);transform:translateY(-5px);box-shadow:0 14px 35px rgba(255,193,7,0.12);}
+.cat-icon{font-size:2rem;margin-bottom:0.5rem;}
+.cat-name{font-size:0.85rem;font-weight:700;}
+.cat-count{font-size:0.68rem;color:var(--text-muted);margin-top:0.2rem;}
+
+/* DESTINATION CARDS */
+.dest-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(275px,1fr));gap:1.5rem;max-width:1220px;margin:0 auto;}
+.dest-card{position:relative;border-radius:18px;overflow:hidden;height:340px;cursor:pointer;transition:transform 0.45s cubic-bezier(0.25,0.8,0.25,1),box-shadow 0.45s;border:1px solid rgba(255,255,255,0.06);}
+.dest-card:hover{transform:translateY(-10px) scale(1.015);box-shadow:0 28px 65px rgba(0,0,0,0.75);}
+.dest-img{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform 0.6s ease;}
+.dest-card:hover .dest-img{transform:scale(1.1);}
+.dest-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(7,7,26,0.97) 30%,rgba(7,7,26,0.08) 100%);}
+.dest-rating{position:absolute;top:1rem;right:1rem;background:rgba(7,7,26,0.82);border:1px solid rgba(255,193,7,0.4);border-radius:20px;padding:0.28rem 0.75rem;font-size:0.8rem;font-weight:700;color:var(--gold);backdrop-filter:blur(8px);}
+.dest-badge{position:absolute;top:1rem;left:1rem;background:rgba(255,107,0,0.85);color:#fff;padding:0.2rem 0.6rem;border-radius:20px;font-size:0.62rem;font-weight:700;letter-spacing:1px;backdrop-filter:blur(6px);}
+.dest-content{position:absolute;bottom:0;padding:1.4rem;width:100%;}
+.dest-state{font-size:0.67rem;letter-spacing:2px;color:var(--saffron);font-weight:700;margin-bottom:0.3rem;}
+.dest-name{font-family:'Playfair Display',serif;font-size:1.45rem;font-weight:900;margin-bottom:0.35rem;line-height:1.2;}
+.dest-desc{font-size:0.79rem;color:var(--text-muted);line-height:1.5;margin-bottom:0.7rem;}
+.tags{display:flex;gap:0.35rem;flex-wrap:wrap;}
+.tag{background:rgba(255,193,7,0.12);border:1px solid rgba(255,193,7,0.22);color:var(--gold);padding:0.16rem 0.5rem;border-radius:20px;font-size:0.63rem;font-weight:700;}
+
+/* CULTURE PAGE */
+.culture-filters{display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:3rem;}
+.culture-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:1.5rem;max-width:1200px;margin:0 auto;}
+.culture-card{background:var(--card-bg);border:1px solid var(--border-glow);border-radius:16px;overflow:hidden;transition:all 0.35s;}
+.culture-card:hover{transform:translateY(-5px);box-shadow:0 20px 50px rgba(0,0,0,0.5);border-color:rgba(255,193,7,0.3);}
+.culture-header{padding:2rem 1.5rem 1.5rem;background:linear-gradient(135deg,rgba(255,107,0,0.1),rgba(0,96,100,0.1));text-align:center;font-size:3.2rem;}
+.culture-header.with-img{padding:0;font-size:0;}
+.cloth-hero-img{width:100%;height:170px;object-fit:cover;display:block;}
+.culture-body{padding:1.4rem;}
+.culture-title{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:900;margin-bottom:0.3rem;}
+.culture-state{font-size:0.67rem;color:var(--saffron);letter-spacing:1px;font-weight:700;margin-bottom:0.6rem;}
+.culture-text{font-size:0.82rem;color:var(--text-muted);line-height:1.75;}
+
+/* SHOPPING MALLS */
+.mall-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1.5rem;max-width:1220px;margin:0 auto;}
+.mall-card{background:var(--card-bg);border:1px solid var(--border-glow);border-radius:16px;overflow:hidden;transition:all 0.35s;}
+.mall-card:hover{transform:translateY(-6px);box-shadow:0 22px 55px rgba(0,0,0,0.55);border-color:rgba(255,193,7,0.35);}
+.mall-img{width:100%;height:178px;object-fit:cover;background:rgba(255,193,7,0.06);}
+.mall-body{padding:1.3rem;}
+.mall-type{font-size:0.63rem;letter-spacing:1.5px;color:var(--saffron);font-weight:700;margin-bottom:0.3rem;}
+.mall-name{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:900;margin-bottom:0.2rem;}
+.mall-city{font-size:0.74rem;color:var(--text-muted);margin-bottom:0.6rem;}
+.mall-desc{font-size:0.8rem;color:var(--text-muted);line-height:1.6;margin-bottom:0.7rem;}
+.mall-row{display:flex;gap:0.4rem;align-items:flex-start;font-size:0.78rem;margin-bottom:0.28rem;}
+.mall-lbl{color:var(--gold);font-weight:700;flex-shrink:0;}
+.mall-link{display:block;text-align:center;background:linear-gradient(135deg,var(--teal),#00695C);color:#fff;text-decoration:none;padding:0.5rem;border-radius:8px;font-size:0.8rem;font-weight:700;margin-top:0.9rem;font-family:'Rajdhani',sans-serif;transition:opacity 0.2s,transform 0.2s;}
+.mall-link:hover{opacity:0.88;transform:translateY(-1px);}
+
+/* HOTEL CARDS */
+.hotel-img-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:1rem;}
+.hotel-img-card{background:rgba(255,255,255,0.04);border:1px solid var(--border-glow);border-radius:12px;overflow:hidden;transition:all 0.3s;}
+.hotel-img-card:hover{border-color:var(--gold);transform:translateY(-2px);}
+.h-img{width:100%;height:130px;object-fit:cover;}
+.h-img-body{padding:0.9rem;}
+.h-type{font-size:0.61rem;letter-spacing:1.5px;color:var(--saffron);font-weight:700;margin-bottom:0.2rem;}
+.h-name{font-weight:700;font-size:0.86rem;margin-bottom:0.22rem;}
+.h-stars{color:var(--gold);font-size:0.78rem;margin-bottom:0.22rem;}
+.h-price{font-size:1rem;font-weight:900;color:var(--gold);}
+.h-book{display:block;text-align:center;background:linear-gradient(135deg,#FF6B00,#E65100);color:#fff;text-decoration:none;padding:0.45rem;border-radius:7px;font-size:0.74rem;font-weight:700;margin-top:0.7rem;font-family:'Rajdhani',sans-serif;transition:opacity 0.2s;}
+.h-book:hover{opacity:0.83;}
+
+/* ML */
+.ml-section{background:linear-gradient(135deg,rgba(0,96,100,0.07),rgba(255,107,0,0.04));border-top:1px solid var(--border-glow);padding:5rem 2rem;}
+.ml-pipeline{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;max-width:950px;margin:2rem auto;}
+.ml-step{text-align:center;padding:1.2rem;min-width:125px;}
+.ml-icon{font-size:1.7rem;margin-bottom:0.4rem;}
+.ml-name{font-size:0.75rem;font-weight:700;color:var(--gold);}
+.ml-desc{font-size:0.63rem;color:var(--text-muted);margin-top:0.2rem;}
+.ml-arrow{color:var(--saffron);opacity:0.45;font-size:1.2rem;padding:0 0.2rem;}
+.algo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:1rem;max-width:900px;margin:2rem auto 0;}
+.algo-card{background:var(--card-bg);border:1px solid var(--border-glow);border-radius:12px;padding:1.3rem;text-align:center;transition:all 0.3s;}
+.algo-card:hover{border-color:rgba(255,193,7,0.4);transform:translateY(-3px);}
+.algo-name{font-weight:700;font-size:0.84rem;margin-bottom:0.3rem;color:var(--gold);}
+.algo-acc{font-size:1.7rem;font-weight:900;background:linear-gradient(135deg,#FF6B00,#FFC107);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.algo-desc{font-size:0.67rem;color:var(--text-muted);margin-top:0.3rem;}
+
+/* RECOMMENDER */
+.rec-section{min-height:100vh;background:linear-gradient(135deg,rgba(255,107,0,0.04),rgba(0,96,100,0.07));padding:4rem 2rem;}
+.rec-box{max-width:820px;margin:0 auto;background:rgba(255,255,255,0.04);border:1px solid var(--border-glow);border-radius:20px;padding:2.5rem;backdrop-filter:blur(20px);}
+.rec-title{font-family:'Playfair Display',serif;font-size:1.55rem;font-weight:900;text-align:center;margin-bottom:0.4rem;}
+.rec-subtitle{color:var(--text-muted);text-align:center;font-size:0.88rem;margin-bottom:2rem;}
+.rec-filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:1rem;margin-bottom:1.5rem;}
+.fgroup label{display:block;font-size:0.71rem;font-weight:700;letter-spacing:1px;color:var(--gold);margin-bottom:0.4rem;}
+.fgroup select{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,193,7,0.2);border-radius:8px;padding:0.65rem 0.9rem;color:var(--text-light);font-family:'Rajdhani',sans-serif;font-size:0.9rem;font-weight:600;outline:none;cursor:pointer;transition:border-color 0.3s;}
+.fgroup select:focus{border-color:var(--gold);}
+.fgroup select option{background:#14142a;}
+.ai-btn{width:100%;padding:0.95rem;margin-top:0.5rem;background:linear-gradient(135deg,var(--saffron),var(--maroon));border:none;border-radius:12px;color:#fff;font-size:1rem;font-weight:700;font-family:'Rajdhani',sans-serif;cursor:pointer;letter-spacing:1px;transition:all 0.3s;}
+.ai-btn:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(255,107,0,0.4);}
+.rec-results{margin-top:2rem;display:none;}
+.rec-results.show{display:block;}
+.rec-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,193,7,0.14);border-radius:12px;padding:1.2rem;margin-bottom:1rem;display:flex;gap:1rem;align-items:center;cursor:pointer;transition:border-color 0.3s,transform 0.3s;}
+.rec-card:hover{border-color:var(--gold);transform:translateX(4px);}
+.rec-img{width:64px;height:64px;border-radius:10px;object-fit:cover;flex-shrink:0;}
+.rec-info{flex:1;}
+.rec-name{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:0.2rem;}
+.rec-detail{font-size:0.79rem;color:var(--text-muted);line-height:1.5;}
+.rec-score{text-align:center;flex-shrink:0;}
+.score-num{font-size:1.3rem;font-weight:900;background:linear-gradient(135deg,#FF6B00,#FFC107);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.score-lbl{font-size:0.61rem;color:var(--text-muted);}
+
+/* AUTH */
+.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;background:radial-gradient(ellipse at 30% 50%,rgba(255,107,0,0.07),transparent 60%),radial-gradient(ellipse at 70% 50%,rgba(0,96,100,0.07),transparent 60%);}
+.auth-box{width:100%;max-width:440px;background:rgba(255,255,255,0.04);border:1px solid var(--border-glow);border-radius:24px;padding:2.5rem;backdrop-filter:blur(20px);animation:fadeUp 0.6s ease;}
+.auth-logo{text-align:center;font-size:2.2rem;margin-bottom:0.4rem;}
+.auth-title{font-family:'Playfair Display',serif;font-size:1.8rem;text-align:center;font-weight:900;margin-bottom:0.3rem;}
+.auth-sub{text-align:center;color:var(--text-muted);font-size:0.84rem;margin-bottom:2rem;}
+.form-group{margin-bottom:1.1rem;}
+.form-label{display:block;font-size:0.71rem;letter-spacing:1px;font-weight:700;color:var(--gold);margin-bottom:0.38rem;}
+.form-input{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,193,7,0.2);border-radius:10px;padding:0.75rem 1rem;color:var(--text-light);font-family:'Rajdhani',sans-serif;font-size:0.95rem;font-weight:500;outline:none;transition:border-color 0.3s;}
+.form-input:focus{border-color:var(--gold);}
+.form-input::placeholder{color:rgba(255,248,231,0.18);}
+.form-input option{background:#14142a;}
+.btn-auth{width:100%;padding:0.85rem;background:linear-gradient(135deg,#FF6B00,#E65100);border:none;border-radius:10px;color:#fff;font-size:1rem;font-weight:700;font-family:'Rajdhani',sans-serif;cursor:pointer;letter-spacing:1px;transition:all 0.3s;margin-top:0.5rem;}
+.btn-auth:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(255,107,0,0.4);}
+.auth-switch{text-align:center;margin-top:1.2rem;font-size:0.85rem;color:var(--text-muted);}
+.auth-switch a{color:var(--gold);text-decoration:none;font-weight:700;cursor:pointer;}
+.divider{display:flex;align-items:center;gap:1rem;margin:1.4rem 0;color:var(--text-muted);font-size:0.78rem;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.08);}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+
+/* ADMIN */
+.admin-wrap{display:flex;min-height:calc(100vh - 66px);}
+.admin-sidebar{width:215px;flex-shrink:0;background:rgba(255,255,255,0.025);border-right:1px solid var(--border-glow);padding:1.2rem 0.8rem;}
+.a-section-lbl{font-size:0.63rem;letter-spacing:2px;color:var(--text-muted);font-weight:700;padding:0 0.6rem;margin-bottom:0.4rem;margin-top:1rem;}
+.a-menu-item{display:flex;align-items:center;gap:0.7rem;padding:0.6rem 0.8rem;border-radius:10px;font-size:0.86rem;font-weight:600;cursor:pointer;color:var(--text-muted);transition:all 0.2s;margin-bottom:0.16rem;}
+.a-menu-item:hover,.a-menu-item.active{background:rgba(255,193,7,0.09);color:var(--gold);}
+.a-menu-icon{font-size:0.95rem;width:20px;text-align:center;}
+.admin-main{flex:1;padding:2rem;overflow-y:auto;}
+.admin-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;}
+.admin-title{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:900;}
+.a-stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:1rem;margin-bottom:2rem;}
+.a-stat-card{background:var(--card-bg);border:1px solid var(--border-glow);border-radius:14px;padding:1.3rem;transition:all 0.3s;}
+.a-stat-card:hover{border-color:rgba(255,193,7,0.4);transform:translateY(-2px);}
+.a-stat-icon{font-size:1.4rem;margin-bottom:0.5rem;}
+.a-stat-num{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:900;background:linear-gradient(135deg,#FF6B00,#FFC107);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.a-stat-lbl{font-size:0.74rem;color:var(--text-muted);}
+.a-table-wrap{overflow-x:auto;border-radius:14px;border:1px solid var(--border-glow);}
+.a-table{width:100%;border-collapse:collapse;font-size:0.84rem;}
+.a-table th{padding:0.75rem 1rem;text-align:left;background:rgba(255,193,7,0.04);font-size:0.68rem;letter-spacing:1px;color:var(--gold);font-weight:700;}
+.a-table td{padding:0.68rem 1rem;border-top:1px solid rgba(255,255,255,0.04);}
+.badge{padding:0.2rem 0.6rem;border-radius:20px;font-size:0.64rem;font-weight:700;}
+.b-active{background:rgba(0,105,92,0.28);color:#4DB6AC;border:1px solid rgba(77,182,172,0.28);}
+.b-pending{background:rgba(255,152,0,0.2);color:#FFB74D;border:1px solid rgba(255,183,77,0.28);}
+.b-inactive{background:rgba(244,67,54,0.2);color:#EF9A9A;border:1px solid rgba(239,154,154,0.28);}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.88);backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:1rem;}
+.modal-overlay.show{display:flex;}
+.modal{background:#0c0c20;border:1px solid var(--border-glow);border-radius:22px;width:100%;max-width:800px;max-height:92vh;overflow-y:auto;animation:fadeUp 0.3s ease;}
+.modal-hdr{padding:1.5rem 2rem;border-bottom:1px solid var(--border-glow);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#0c0c20;z-index:1;}
+.modal-hero-img{width:100%;height:220px;object-fit:cover;display:block;}
+.modal-title{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:900;}
+.modal-close{background:none;border:none;color:var(--text-muted);font-size:1.3rem;cursor:pointer;line-height:1;transition:color 0.2s;}
+.modal-close:hover{color:#fff;}
+.modal-body{padding:2rem;}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;}
+.info-card{background:rgba(255,255,255,0.04);border:1px solid var(--border-glow);border-radius:14px;padding:1.5rem;}
+.info-card-lbl{font-size:0.69rem;letter-spacing:2px;color:var(--saffron);font-weight:700;margin-bottom:1rem;}
+.info-row{display:flex;justify-content:space-between;align-items:flex-start;padding:0.52rem 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:0.83rem;gap:1rem;}
+.info-row:last-child{border-bottom:none;}
+.info-key{color:var(--text-muted);flex-shrink:0;}
+.info-val{font-weight:700;text-align:right;}
+.hist-card{background:rgba(255,255,255,0.04);border:1px solid var(--border-glow);border-radius:14px;padding:1.8rem;margin-bottom:1.5rem;}
+.hist-title{font-family:'Playfair Display',serif;font-size:1.28rem;font-weight:900;margin-bottom:0.8rem;}
+.hist-text{color:var(--text-muted);line-height:1.9;font-size:0.89rem;}
+
+/* TOAST */
+.toast{position:fixed;bottom:2rem;right:2rem;z-index:3000;background:rgba(12,12,32,0.97);border:1px solid var(--border-glow);border-radius:12px;padding:0.9rem 1.4rem;font-size:0.88rem;font-weight:600;transform:translateX(260%);transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);display:flex;align-items:center;gap:0.6rem;backdrop-filter:blur(20px);max-width:320px;}
+.toast.show{transform:translateX(0);}
+.spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,0.25);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;vertical-align:middle;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.code-block{background:rgba(0,0,0,0.4);border-radius:10px;padding:1.3rem;font-family:monospace;font-size:0.76rem;line-height:1.75;color:#88ffdd;overflow-x:auto;white-space:pre;}
+.bar-track{background:rgba(255,255,255,0.06);border-radius:20px;height:8px;overflow:hidden;margin-top:0.4rem;}
+.bar-fill{height:100%;background:linear-gradient(90deg,#FF6B00,#FFC107);border-radius:20px;}
+
+/* FOOTER */
+footer{background:rgba(255,255,255,0.02);border-top:1px solid var(--border-glow);padding:3rem 2rem 2rem;text-align:center;}
+.footer-logo{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:900;background:linear-gradient(135deg,#FF6B00,#FFC107);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:0.5rem;}
+.footer-links{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin:1rem 0 2rem;}
+.footer-links a{color:var(--text-muted);font-size:0.8rem;cursor:pointer;text-decoration:none;transition:color 0.2s;}
+.footer-links a:hover{color:var(--gold);}
+.footer-copy{font-size:0.72rem;color:rgba(255,248,231,0.22);}
+
+@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.04);}}
+@media(max-width:700px){.nav-links{display:none;}.detail-grid,.two-col{grid-template-columns:1fr;}.admin-sidebar{display:none;}.hero-title{font-size:2.2rem;}}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="logo" onclick="goPage('home')">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" stroke="#FFC107" stroke-width="1.5"/><circle cx="14" cy="14" r="3.5" fill="#FF6B00"/><line x1="14" y1="1" x2="14" y2="27" stroke="#FFC107" stroke-width="1.2" opacity=".5"/><line x1="1" y1="14" x2="27" y2="14" stroke="#FFC107" stroke-width="1.2" opacity=".5"/></svg>
+    IndiTour AI
+  </div>
+  <ul class="nav-links">
+    <li><a class="active" onclick="goPage('home')">Home</a></li>
+    <li><a onclick="goPage('explore')">Explore</a></li>
+    <li><a onclick="goPage('culture')">Culture & Food</a></li>
+    <li><a onclick="goPage('shopping')">Shopping</a></li>
+    <li><a onclick="goPage('recommender')">AI Recommender</a></li>
+    <li><a onclick="goPage('adminlogin')">Admin Panel</a></li>
+  </ul>
+  <div class="nav-auth">
+    <button class="btn-nav btn-login" onclick="goPage('login')">Login</button>
+    <button class="btn-nav btn-register" onclick="goPage('register')">Register</button>
+  </div>
+</nav>
+<div class="tricolor"></div>
+<div class="toast" id="toast"><span id="toast-icon">✅</span><span id="toast-msg"></span></div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="destModal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h2 class="modal-title" id="modalTitle"></h2>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- ══════════ HOME ══════════ -->
+<div class="page active" id="page-home">
+  <!-- HERO with real sliding images -->
+  <div class="hero">
+    <div class="hero-bg-slider" id="heroBgSlider"></div>
+    <div class="hero-vignette"></div>
+    <div class="hero-particles" id="heroParticles"></div>
+    <div class="hero-content">
+      <div class="hero-badge"><span></span>AI-POWERED TRAVEL INTELLIGENCE</div>
+      <h1 class="hero-title">Explore India with<span class="grad">IndiTour AI</span></h1>
+      <p class="hero-sub">From the Himalayas to Kanyakumari — 29 states, 8 UTs, 5000 years of history, 22 official languages, and infinite wonders await you.</p>
+      <div class="hero-cta">
+        <button class="btn-primary" onclick="goPage('recommender')">🤖 Get AI Recommendations</button>
+        <button class="btn-secondary" onclick="goPage('explore')">Explore Destinations</button>
+      </div>
+    </div>
+    <div class="hero-dots" id="heroDots"></div>
+  </div>
+
+  <div class="stats-strip">
+    <div class="stats-inner">
+      <div class="stat-item"><div class="stat-num" id="cnt1">0</div><div class="stat-label">UNESCO SITES</div></div>
+      <div class="stat-item"><div class="stat-num" id="cnt2">0</div><div class="stat-label">DESTINATIONS</div></div>
+      <div class="stat-item"><div class="stat-num" id="cnt3">0</div><div class="stat-label">LANGUAGES</div></div>
+      <div class="stat-item"><div class="stat-num" id="cnt4">0</div><div class="stat-label">CUISINES</div></div>
+      <div class="stat-item"><div class="stat-num" id="cnt5">0</div><div class="stat-label">YEARS OF HISTORY</div></div>
+    </div>
+  </div>
+
+  <div class="section reveal">
+    <div class="section-header">
+      <div class="section-tag">BROWSE BY TYPE</div>
+      <h2 class="section-title">What kind of <em>adventure</em> are you seeking?</h2>
+    </div>
+    <div class="cat-grid">
+      <div class="cat-card reveal" onclick="filterExplore('mountain')"><div class="cat-icon">⛰️</div><div class="cat-name">Mountains</div><div class="cat-count">12 spots</div></div>
+      <div class="cat-card reveal" onclick="filterExplore('beach')"><div class="cat-icon">🏖️</div><div class="cat-name">Beaches</div><div class="cat-count">18 spots</div></div>
+      <div class="cat-card reveal" onclick="filterExplore('heritage')"><div class="cat-icon">🏛️</div><div class="cat-name">Heritage</div><div class="cat-count">28 spots</div></div>
+      <div class="cat-card reveal" onclick="filterExplore('wildlife')"><div class="cat-icon">🐯</div><div class="cat-name">Wildlife</div><div class="cat-count">15 spots</div></div>
+      <div class="cat-card reveal" onclick="filterExplore('spiritual')"><div class="cat-icon">🕌</div><div class="cat-name">Spiritual</div><div class="cat-count">24 spots</div></div>
+      <div class="cat-card reveal" onclick="filterExplore('adventure')"><div class="cat-icon">🪂</div><div class="cat-name">Adventure</div><div class="cat-count">10 spots</div></div>
+    </div>
+  </div>
+
+  <div class="section" style="background:rgba(255,255,255,0.01);border-top:1px solid var(--border-glow);">
+    <div class="section-header reveal">
+      <div class="section-tag">FEATURED DESTINATIONS</div>
+      <h2 class="section-title">Most <em>Beloved</em> Places</h2>
+    </div>
+    <div class="dest-grid" id="featuredGrid"></div>
+  </div>
+
+  <div class="ml-section">
+    <div class="section-header reveal">
+      <div class="section-tag">HOW INDITOUR AI WORKS</div>
+      <h2 class="section-title">Machine Learning <em>Pipeline</em></h2>
+    </div>
+    <div class="ml-pipeline">
+      <div class="ml-step reveal"><div class="ml-icon">📊</div><div class="ml-name">Data Collection</div><div class="ml-desc">MongoDB + Pandas</div></div>
+      <div class="ml-arrow reveal">→</div>
+      <div class="ml-step reveal"><div class="ml-icon">🧹</div><div class="ml-name">Preprocessing</div><div class="ml-desc">NLP + Feature Eng.</div></div>
+      <div class="ml-arrow reveal">→</div>
+      <div class="ml-step reveal"><div class="ml-icon">🔢</div><div class="ml-name">Vectorization</div><div class="ml-desc">TF-IDF + One-Hot</div></div>
+      <div class="ml-arrow reveal">→</div>
+      <div class="ml-step reveal"><div class="ml-icon">🤖</div><div class="ml-name">ML Training</div><div class="ml-desc">Collaborative Filter</div></div>
+      <div class="ml-arrow reveal">→</div>
+      <div class="ml-step reveal"><div class="ml-icon">🎯</div><div class="ml-name">Personalization</div><div class="ml-desc">Ranked Results</div></div>
+    </div>
+    <div class="algo-grid">
+      <div class="algo-card reveal"><div class="algo-name">Collaborative Filtering</div><div class="algo-acc">94.2%</div><div class="algo-desc">User-based similarity</div></div>
+      <div class="algo-card reveal"><div class="algo-name">Content-Based Filter</div><div class="algo-acc">91.7%</div><div class="algo-desc">Destination vectors</div></div>
+      <div class="algo-card reveal"><div class="algo-name">KNN Recommender</div><div class="algo-acc">89.4%</div><div class="algo-desc">K-Nearest neighbor</div></div>
+      <div class="algo-card reveal"><div class="algo-name">Neural Hybrid</div><div class="algo-acc">96.8%</div><div class="algo-desc">Deep learning ensemble</div></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">🪷 IndiTour AI</div>
+    <p style="color:var(--text-muted);font-size:0.82rem;">Your intelligent travel companion for exploring the land of diversity</p>
+    <div class="footer-links">
+      <a onclick="goPage('explore')">Destinations</a>
+      <a onclick="goPage('culture')">Culture & Food</a>
+      <a onclick="goPage('shopping')">Shopping Malls</a>
+      <a onclick="goPage('recommender')">AI Recommender</a>
+      <a onclick="goPage('login')">Login</a>
+    </div>
+    <div class="footer-copy">© 2025 IndiTour AI · Powered by ML, MongoDB & Python Pandas</div>
+  </footer>
+</div>
+
+<!-- ══════════ EXPLORE ══════════ -->
+<div class="page" id="page-explore">
+  <div style="padding:2rem;max-width:1300px;margin:0 auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;">
+      <div>
+        <h1 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;">Explore <span style="background:linear-gradient(135deg,#FF6B00,#FFC107);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">India</span></h1>
+        <p style="color:var(--text-muted);font-size:0.84rem;">All popular destinations across the subcontinent</p>
+      </div>
+      <div style="display:flex;gap:0.7rem;flex-wrap:wrap;">
+        <select id="filterType" onchange="renderExplore()" style="background:rgba(255,255,255,0.05);border:1px solid var(--border-glow);border-radius:8px;padding:0.5rem 1rem;color:var(--text-light);font-family:'Rajdhani',sans-serif;font-weight:600;outline:none;cursor:pointer;">
+          <option value="">All Types</option><option value="mountain">Mountains</option><option value="beach">Beaches</option><option value="heritage">Heritage</option><option value="wildlife">Wildlife</option><option value="spiritual">Spiritual</option><option value="adventure">Adventure</option>
+        </select>
+        <select id="filterSeason" onchange="renderExplore()" style="background:rgba(255,255,255,0.05);border:1px solid var(--border-glow);border-radius:8px;padding:0.5rem 1rem;color:var(--text-light);font-family:'Rajdhani',sans-serif;font-weight:600;outline:none;cursor:pointer;">
+          <option value="">All Seasons</option><option value="winter">Winter</option><option value="summer">Summer</option><option value="monsoon">Monsoon</option>
+        </select>
+      </div>
+    </div>
+    <div class="dest-grid" id="exploreGrid"></div>
+  </div>
+</div>
+
+<!-- ══════════ CULTURE ══════════ -->
+<div class="page" id="page-culture">
+  <div style="padding:3rem 2rem;max-width:1200px;margin:0 auto;">
+    <div class="section-header">
+      <div class="section-tag">CULTURE & CUISINE</div>
+      <h2 class="section-title">Taste the <em>Diversity</em> of India</h2>
+    </div>
+    <div class="culture-filters">
+      <button class="btn-primary" style="padding:0.4rem 1.1rem;font-size:0.82rem;" onclick="renderCulture('all')">All Culture</button>
+      <button class="btn-secondary" style="padding:0.4rem 1.1rem;font-size:0.82rem;" onclick="renderCulture('food')">🍛 Food</button>
+      <button class="btn-secondary" style="padding:0.4rem 1.1rem;font-size:0.82rem;" onclick="renderCulture('language')">🗣️ Languages</button>
+      <button class="btn-secondary" style="padding:0.4rem 1.1rem;font-size:0.82rem;" onclick="renderCulture('clothing')">👗 Clothing</button>
+      <button class="btn-secondary" style="padding:0.4rem 1.1rem;font-size:0.82rem;" onclick="renderCulture('festival')">🎉 Festivals</button>
+    </div>
+    <div class="culture-grid" id="cultureGrid"></div>
+  </div>
+</div>
+
+<!-- ══════════ SHOPPING ══════════ -->
+<div class="page" id="page-shopping">
+  <div style="padding:3rem 2rem;max-width:1260px;margin:0 auto;">
+    <div class="section-header">
+      <div class="section-tag">RETAIL THERAPY</div>
+      <h2 class="section-title">Top Shopping <em>Malls</em> in India</h2>
+    </div>
+    <div class="mall-grid" id="mallGrid"></div>
+  </div>
+</div>
+
+<!-- ══════════ AI RECOMMENDER ══════════ -->
+<div class="page" id="page-recommender">
+  <div class="rec-section">
+    <div class="section-header">
+      <div class="section-tag">ML-POWERED ENGINE</div>
+      <h2 class="section-title">Your Personal <em>IndiTour AI</em> Recommender</h2>
+    </div>
+    <div class="rec-box">
+      <h3 class="rec-title">🤖 AI Travel Planner</h3>
+      <p class="rec-subtitle">Tell us your preferences and our ML algorithm finds your perfect destination</p>
+      <div class="rec-filters">
+        <div class="fgroup"><label>TRAVEL TYPE</label><select id="pType"><option>Adventure</option><option>Cultural</option><option>Relaxation</option><option>Spiritual</option><option>Wildlife</option><option>Beach</option><option>Mountain</option></select></div>
+        <div class="fgroup"><label>SEASON</label><select id="pSeason"><option>Winter (Oct–Feb)</option><option>Summer (Mar–Jun)</option><option>Monsoon (Jul–Sep)</option></select></div>
+        <div class="fgroup"><label>BUDGET</label><select id="pBudget"><option>Budget (₹1k–3k/day)</option><option>Moderate (₹3k–8k/day)</option><option>Luxury (₹8k+/day)</option></select></div>
+        <div class="fgroup"><label>DURATION</label><select id="pDuration"><option>Weekend (2–3 days)</option><option>Short (4–6 days)</option><option>Week (7–10 days)</option><option>Long (10+ days)</option></select></div>
+        <div class="fgroup"><label>TRAVELERS</label><select id="pTravelers"><option>Solo</option><option>Couple</option><option>Family</option><option>Friends Group</option></select></div>
+        <div class="fgroup"><label>INTEREST</label><select id="pInterest"><option>Photography</option><option>History</option><option>Food & Cuisine</option><option>Trekking</option><option>Yoga & Wellness</option><option>Architecture</option></select></div>
+      </div>
+      <button class="ai-btn" onclick="runML()" id="mlBtn">🚀 Generate AI Recommendations</button>
+      <div class="rec-results" id="recResults">
+        <div style="font-size:0.7rem;letter-spacing:1.5px;color:var(--gold);font-weight:700;margin-bottom:1rem;">🎯 TOP RECOMMENDATIONS — ML CONFIDENCE SCORES</div>
+        <div id="recList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ LOGIN ══════════ -->
+<div class="page" id="page-login">
+  <div class="auth-wrap">
+    <div class="auth-box">
+      <div class="auth-logo">🪷</div>
+      <h2 class="auth-title">Welcome Back</h2>
+      <p class="auth-sub">Login to your IndiTour AI account</p>
+      <div class="form-group"><label class="form-label">EMAIL ADDRESS</label><input class="form-input" type="email" placeholder="explorer@india.com" id="loginEmail"></div>
+      <div class="form-group"><label class="form-label">PASSWORD</label><input class="form-input" type="password" placeholder="••••••••••" id="loginPass"></div>
+      <div style="text-align:right;margin-top:-0.7rem;margin-bottom:1rem;"><a style="font-size:0.8rem;color:var(--gold);cursor:pointer;">Forgot password?</a></div>
+      <button class="btn-auth" onclick="doLogin()">Login to IndiTour AI →</button>
+      <div class="divider">OR CONTINUE WITH</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;">
+        <button onclick="showToast('Google login initiated!','🔵')" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:0.65rem;cursor:pointer;color:var(--text-light);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.84rem;">🔵 Google</button>
+        <button onclick="showToast('Facebook login initiated!','📘')" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:0.65rem;cursor:pointer;color:var(--text-light);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.84rem;">📘 Facebook</button>
+      </div>
+      <div class="auth-switch">Don't have an account? <a onclick="goPage('register')">Sign up free</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ REGISTER ══════════ -->
+<div class="page" id="page-register">
+  <div class="auth-wrap">
+    <div class="auth-box" style="max-width:500px;">
+      <div class="auth-logo">🌏</div>
+      <h2 class="auth-title">Join IndiTour AI</h2>
+      <p class="auth-sub">Create your account and start exploring India</p>
+      <div class="two-col">
+        <div class="form-group"><label class="form-label">FIRST NAME</label><input class="form-input" type="text" placeholder="Arjun" id="regFirst"></div>
+        <div class="form-group"><label class="form-label">LAST NAME</label><input class="form-input" type="text" placeholder="Sharma" id="regLast"></div>
+      </div>
+      <div class="form-group"><label class="form-label">EMAIL ADDRESS</label><input class="form-input" type="email" placeholder="arjun@email.com" id="regEmail"></div>
+      <div class="form-group"><label class="form-label">PHONE NUMBER</label><input class="form-input" type="tel" placeholder="+91 98765 43210" id="regPhone"></div>
+      <div class="form-group"><label class="form-label">DATE OF BIRTH</label><input class="form-input" type="date" id="regDob"></div>
+      <div class="form-group"><label class="form-label">TRAVEL PREFERENCE</label>
+        <select class="form-input" id="regPref"><option>Adventure Seeker</option><option>Culture Explorer</option><option>Leisure Traveler</option><option>Backpacker</option><option>Luxury Traveler</option></select>
+      </div>
+      <div class="form-group"><label class="form-label">PASSWORD</label><input class="form-input" type="password" placeholder="Create a strong password" id="regPass"></div>
+      <div style="display:flex;align-items:flex-start;gap:0.7rem;margin-bottom:1rem;">
+        <input type="checkbox" id="regTerms" style="margin-top:3px;accent-color:var(--saffron);">
+        <label for="regTerms" style="font-size:0.82rem;color:var(--text-muted);cursor:pointer;">I agree to the <a style="color:var(--gold);">Terms of Service</a> and <a style="color:var(--gold);">Privacy Policy</a></label>
+      </div>
+      <button class="btn-auth" onclick="doRegister()">Create My Account →</button>
+      <div class="auth-switch">Already a member? <a onclick="goPage('login')">Sign in</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ ADMIN LOGIN ══════════ -->
+<div class="page" id="page-adminlogin">
+  <div class="auth-wrap">
+    <div class="auth-box">
+      <div class="auth-logo">🛡️</div>
+      <h2 class="auth-title">Admin Access</h2>
+      <p class="auth-sub">IndiTour AI — Restricted area</p>
+      <div id="adminLoginError" style="display:none;background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.3);border-radius:10px;padding:0.75rem 1rem;font-size:0.84rem;color:#EF9A9A;margin-bottom:1rem;text-align:center;">❌ Invalid credentials. Access denied.</div>
+      <div class="form-group"><label class="form-label">ADMIN USERNAME</label><input class="form-input" type="text" placeholder="Enter username" id="adminUser"></div>
+      <div class="form-group"><label class="form-label">ADMIN PASSWORD</label><input class="form-input" type="password" placeholder="••••••••••" id="adminPass" onkeydown="if(event.key==='Enter')doAdminLogin()"></div>
+      <button class="btn-auth" onclick="doAdminLogin()">🔐 Login to Admin Panel</button>
+      <div class="auth-switch"><a onclick="goPage('home')" style="color:var(--text-muted);font-weight:400;">← Back to IndiTour AI</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ ADMIN PANEL ══════════ -->
+<div class="page" id="page-admin">
+  <div class="admin-wrap">
+    <aside class="admin-sidebar">
+      <div style="text-align:center;padding:1rem 0;border-bottom:1px solid var(--border-glow);margin-bottom:1rem;">
+        <div style="font-size:1.5rem;margin-bottom:0.3rem;">🛡️</div>
+        <div style="font-size:0.78rem;font-weight:700;color:var(--gold);">IndiTour AI Admin</div>
+        <div style="font-size:0.67rem;color:var(--text-muted);">Somaiyya</div>
+      </div>
+      <div class="a-section-lbl">NAVIGATION</div>
+      <div class="a-menu-item active" id="menu-overview" onclick="adminTab('overview',this)"><span class="a-menu-icon">📊</span> Overview</div>
+      <div class="a-menu-item" id="menu-destinations" onclick="adminTab('destinations',this)"><span class="a-menu-icon">🗺️</span> Destinations</div>
+      <div class="a-menu-item" id="menu-users" onclick="adminTab('users',this)"><span class="a-menu-icon">👥</span> Users</div>
+      <div class="a-menu-item" id="menu-hotels" onclick="adminTab('hotels',this)"><span class="a-menu-icon">🏨</span> Hotels</div>
+      <div class="a-menu-item" id="menu-malls" onclick="adminTab('malls',this)"><span class="a-menu-icon">🛍️</span> Malls</div>
+      <div class="a-section-lbl">ML SYSTEM</div>
+      <div class="a-menu-item" id="menu-ml" onclick="adminTab('ml',this)"><span class="a-menu-icon">🤖</span> ML Models</div>
+      <div class="a-menu-item" id="menu-analytics" onclick="adminTab('analytics',this)"><span class="a-menu-icon">📈</span> Analytics</div>
+      <div class="a-section-lbl">DATABASE</div>
+      <div class="a-menu-item" id="menu-db" onclick="adminTab('db',this)"><span class="a-menu-icon">🗄️</span> MongoDB</div>
+      <div class="a-section-lbl">SITE</div>
+      <div class="a-menu-item" onclick="goPage('home')"><span class="a-menu-icon">🏠</span> Back to Site</div>
+      <div class="a-menu-item" onclick="adminLogout()" style="color:#EF9A9A;"><span class="a-menu-icon">🔓</span> Logout</div>
+    </aside>
+    <main class="admin-main" id="adminMain"></main>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════
+// DATA
+// ═══════════════════════════════
+const DESTS=[
+  {id:1,name:"Taj Mahal",state:"Uttar Pradesh",emoji:"🕌",type:"heritage",
+   img:"photo-1564507592333-c60657eea523",
+   desc:"Symbol of eternal love — one of the Seven Wonders of the World.",
+   rating:4.9,season:"Oct–Mar",seasonKey:"winter",bestFor:"Couples, History Buffs",
+   language:"Hindi, Urdu",food:"Agra Petha, Mughlai Biryani, Petha Mithai",
+   clothing:"Light Cotton, Salwar Kameez, Banarasi Silk at weddings",
+   history:"Built by Emperor Shah Jahan between 1632–1653 in memory of his beloved wife Mumtaz Mahal. This ivory-white marble mausoleum took 22 years and over 20,000 artisans to complete. It is a UNESCO World Heritage Site and the pinnacle of Mughal architecture.",
+   tags:["UNESCO","Wonder","Mughal","Romance"],
+   hotels:[{name:"Oberoi Amarvilas",type:"LUXURY",stars:5,price:"₹45,000/night"},{name:"ITC Mughal",type:"HERITAGE",stars:5,price:"₹18,000/night"},{name:"Crystal Sarovar",type:"DELUXE",stars:4,price:"₹4,500/night"},{name:"Hotel Zorba",type:"HOSTEL",stars:2,price:"₹800/night"}]},
+  {id:2,name:"Kerala Backwaters",state:"Kerala",emoji:"🌴",type:"beach",
+   img:"photo-1602216056096-3b40cc0c9944",
+   desc:"God's Own Country — serene houseboats, coconut lagoons & lush greenery.",
+   rating:4.8,season:"Oct–Feb",seasonKey:"winter",bestFor:"Couples, Families",
+   language:"Malayalam",food:"Sadhya, Kerala Fish Curry, Puttu, Karimeen Pollichathu",
+   clothing:"Kasavu Saree (women), Mundu (men)",
+   history:"The backwaters form a network of 900+ km of interconnected canals, rivers and lakes. The region was a historical trading hub. Alleppey (Alappuzha), the Venice of the East, has been a major commercial waterway since ancient times.",
+   tags:["Houseboat","Ayurveda","Nature","Backwaters"],
+   hotels:[{name:"Kumarakom Lake Resort",type:"LUXURY",stars:5,price:"₹22,000/night"},{name:"CGH Earth",type:"HERITAGE",stars:4,price:"₹8,000/night"},{name:"Lake Palace Houseboat",type:"HOUSEBOAT",stars:4,price:"₹6,500/night"},{name:"OYO Alleppey",type:"HOSTEL",stars:2,price:"₹600/night"}]},
+  {id:3,name:"Manali",state:"Himachal Pradesh",emoji:"🏔️",type:"mountain",
+   img:"photo-1626621341517-bbf3d9990a23",
+   desc:"Land of lofty peaks, roaring rivers, and soul-stirring Himalayan landscapes.",
+   rating:4.7,season:"Oct–Jun",seasonKey:"winter",bestFor:"Adventure Seekers, Trekkers",
+   language:"Hindi, Pahadi, Kullui",food:"Siddu, Aktori, Dham, Babru, Trout Fish",
+   clothing:"Woolen Kullu Shawl, Pathani Suit, Heavy Woolen Jackets",
+   history:"Manali derives its name from Manu, the ancient lawgiver of Hindu tradition. The valley was a crucial trade route connecting Indian plains to Central Asia via Rohtang Pass. The Hadimba Devi Temple, built in 1553 CE, is a remarkable example of Himachali architecture.",
+   tags:["Trekking","Snow","Adventure","Himalaya"],
+   hotels:[{name:"Solang Valley Resort",type:"LUXURY",stars:5,price:"₹12,000/night"},{name:"Span Resort",type:"DELUXE",stars:4,price:"₹5,500/night"},{name:"Hotel Manali Inn",type:"STANDARD",stars:3,price:"₹2,000/night"},{name:"Snow Hostel Manali",type:"HOSTEL",stars:2,price:"₹550/night"}]},
+  {id:4,name:"Goa Beaches",state:"Goa",emoji:"🏄",type:"beach",
+   img:"photo-1512343879784-a960bf40e7f2",
+   desc:"India's paradise coast — golden sands, vibrant nightlife & Portuguese heritage.",
+   rating:4.6,season:"Nov–Feb",seasonKey:"winter",bestFor:"Friends, Couples, Party Lovers",
+   language:"Konkani, English",food:"Fish Curry Rice, Vindaloo, Xacuti, Bebinca, Feni",
+   clothing:"Western Casual, Swimwear, Breezy Cotton; Kunbi Saree (traditional)",
+   history:"Goa was a Portuguese colony for 451 years until Indian integration in 1961. The Basilica of Bom Jesus is a UNESCO World Heritage Site. Before Portuguese rule, Goa thrived under the Kadamba dynasty and Vijayanagara Empire.",
+   tags:["Beaches","Nightlife","Portuguese","Water Sports"],
+   hotels:[{name:"Taj Exotica Goa",type:"LUXURY",stars:5,price:"₹25,000/night"},{name:"Leela Goa",type:"LUXURY",stars:5,price:"₹20,000/night"},{name:"Cidade de Goa",type:"DELUXE",stars:4,price:"₹7,000/night"},{name:"Backpackers Inn Goa",type:"HOSTEL",stars:2,price:"₹500/night"}]},
+  {id:5,name:"Varanasi",state:"Uttar Pradesh",emoji:"🪔",type:"spiritual",
+   img:"photo-1561361058-c24cecae35ca",
+   desc:"The eternal city — one of the world's oldest continuously inhabited cities on earth.",
+   rating:4.8,season:"Oct–Mar",seasonKey:"winter",bestFor:"Spiritual Seekers, Photographers",
+   language:"Hindi, Bhojpuri, Sanskrit",food:"Baati Chokha, Kachori Sabzi, Malaiyyo, Thandai",
+   clothing:"Dhoti, Saree, Banarasi Silk",
+   history:"Varanasi (Kashi) is over 3,000 years old — the spiritual capital of Hinduism. Mark Twain described it as 'older than history, older than tradition.' The 88 ghats along the Ganges witness the eternal cycle of life and death. The evening Ganga Aarti at Dashashwamedh Ghat is one of India's most spectacular ceremonies.",
+   tags:["Spiritual","Ganges","Ghats","Aarti"],
+   hotels:[{name:"Taj Nadesar Palace",type:"HERITAGE",stars:5,price:"₹30,000/night"},{name:"BrijRama Palace",type:"HERITAGE",stars:5,price:"₹15,000/night"},{name:"Hotel Surya",type:"STANDARD",stars:3,price:"₹2,500/night"},{name:"Shanti Hostel Varanasi",type:"HOSTEL",stars:2,price:"₹400/night"}]},
+  {id:6,name:"Rajasthan Forts",state:"Rajasthan",emoji:"🏯",type:"heritage",
+   img:"photo-1524492412937-b28074a5d7da",
+   desc:"Land of kings — majestic forts, golden deserts, and vibrant Rajput folk culture.",
+   rating:4.8,season:"Oct–Mar",seasonKey:"winter",bestFor:"Families, History Buffs, Photographers",
+   language:"Rajasthani, Marwari, Hindi",food:"Dal Baati Churma, Laal Maas, Ghevar",
+   clothing:"Bandhani Saree, Jodhpuri Suit, Lehenga Choli, Pagdi",
+   history:"Rajasthan was home to powerful Rajput clans — Mewar, Marwar, Jaipur — who built magnificent forts. Jaipur (Pink City) was founded in 1727. Mehrangarh Fort in Jodhpur, built in 1460, is considered one of the world's most magnificent forts.",
+   tags:["Heritage","Desert","Forts","Royal","UNESCO"],
+   hotels:[{name:"Umaid Bhawan Palace",type:"PALACE",stars:5,price:"₹65,000/night"},{name:"Rambagh Palace",type:"PALACE",stars:5,price:"₹35,000/night"},{name:"Samode Palace",type:"HERITAGE",stars:5,price:"₹18,000/night"},{name:"Pearl Palace Hostel",type:"HOSTEL",stars:2,price:"₹550/night"}]},
+  {id:7,name:"Jim Corbett",state:"Uttarakhand",emoji:"🐯",type:"wildlife",
+   img:"photo-1586521995568-39abaa0c2311",
+   desc:"India's oldest national park — home to majestic Royal Bengal Tigers.",
+   rating:4.7,season:"Nov–Jun",seasonKey:"winter",bestFor:"Wildlife Enthusiasts, Nature Lovers",
+   language:"Hindi, Kumaoni",food:"Aloo Gutuk, Kafuli, Singori sweet",
+   clothing:"Khaki clothing, Comfortable Casuals, Sturdy Footwear",
+   history:"Established in 1936 as Hailey National Park, Jim Corbett is India's oldest national park. Project Tiger was launched here in 1973. The park covers 1,318 sq km hosting over 600 bird species and 50+ tigers.",
+   tags:["Tiger Safari","Wildlife","Nature","Project Tiger"],
+   hotels:[{name:"Solluna Resort",type:"LUXURY",stars:5,price:"₹15,000/night"},{name:"Jim's Jungle Retreat",type:"RESORT",stars:4,price:"₹8,000/night"},{name:"Infinity Resorts",type:"DELUXE",stars:4,price:"₹6,000/night"},{name:"Corbett Hostel",type:"HOSTEL",stars:2,price:"₹500/night"}]},
+  {id:8,name:"Ladakh",state:"Ladakh (UT)",emoji:"🗻",type:"adventure",
+   img:"photo-1626621341517-bbf3d9990a23",
+   desc:"Roof of the world — moonscapes, ancient monasteries & crystal-clear Pangong Lake.",
+   rating:4.9,season:"Jun–Sep",seasonKey:"summer",bestFor:"Bikers, Adventurers, Buddhist Pilgrims",
+   language:"Ladakhi, Hindi, Tibetan",food:"Thukpa, Momos, Tsampa, Butter Tea",
+   clothing:"Goncha (traditional robe), Heavy Woolen Layers, Down Jackets",
+   history:"Ladakh was part of the ancient Silk Road. An independent kingdom for centuries, the region is dotted with Buddhist monasteries over 1,000 years old — Thiksey, Hemis, Diskit. Hemis Festival is one of the largest monastic festivals in the Himalayas.",
+   tags:["Himalaya","Buddhist","Pangong Lake","Biking"],
+   hotels:[{name:"Grand Dragon Ladakh",type:"LUXURY",stars:5,price:"₹12,000/night"},{name:"Chamba Camp Thiksey",type:"GLAMPING",stars:4,price:"₹20,000/night"},{name:"Hotel Himalaya",type:"STANDARD",stars:3,price:"₹3,000/night"},{name:"Leh Backpackers Hostel",type:"HOSTEL",stars:2,price:"₹400/night"}]},
+  {id:9,name:"Andaman Islands",state:"Andaman & Nicobar (UT)",emoji:"🐠",type:"beach",
+   img:"photo-1583417319070-4a69db38a482",
+   desc:"Pristine tropical paradise — turquoise waters, coral reefs & white sand beaches.",
+   rating:4.8,season:"Nov–May",seasonKey:"winter",bestFor:"Divers, Beach Lovers, Honeymooners",
+   language:"Hindi, Bengali, Tamil",food:"Seafood, Grilled Lobster, Prawn Biryani",
+   clothing:"Light Summer Wear, Swimwear, Rash Guards for diving",
+   history:"The Cellular Jail (Kala Pani) was a British colonial prison where Indian freedom fighters were exiled. The islands are home to the Sentinelese — one of the last uncontacted peoples. The Japanese occupied the islands during WWII.",
+   tags:["Scuba Diving","Snorkeling","Coral Reef","Islands"],
+   hotels:[{name:"Taj Exotica Andaman",type:"LUXURY",stars:5,price:"₹28,000/night"},{name:"Barefoot Havelock",type:"ECO",stars:4,price:"₹10,000/night"},{name:"SeaShell Port Blair",type:"STANDARD",stars:3,price:"₹4,000/night"},{name:"Andaman Hostel",type:"HOSTEL",stars:2,price:"₹600/night"}]},
+  {id:10,name:"Hampi",state:"Karnataka",emoji:"🏛️",type:"heritage",
+   img:"photo-1590050752117-238cb0fb12b1",
+   desc:"Awe-inspiring ruins of the Vijayanagara Empire across surreal boulder landscapes.",
+   rating:4.7,season:"Oct–Feb",seasonKey:"winter",bestFor:"History Buffs, Photographers, Trekkers",
+   language:"Kannada, Telugu",food:"Bisi Bele Bath, Ragi Mudde, Filter Coffee",
+   clothing:"Ilkal Saree (Karnataka), Cotton Dhoti",
+   history:"Hampi was capital of the Vijayanagara Empire (1336–1646 CE), at its peak the second-largest medieval city in the world with 500,000 inhabitants. The ruins are a UNESCO World Heritage Site spread over 4,100 hectares.",
+   tags:["UNESCO","Vijayanagara","Boulder Hopping","Ancient"],
+   hotels:[{name:"Evolve Back Kamala",type:"LUXURY",stars:5,price:"₹25,000/night"},{name:"Hampi's Boulders",type:"BOUTIQUE",stars:4,price:"₹8,000/night"},{name:"Kishkinda Heritage",type:"HERITAGE",stars:3,price:"₹4,000/night"},{name:"Hampi Hostel",type:"HOSTEL",stars:2,price:"₹400/night"}]},
+  {id:11,name:"Munnar",state:"Kerala",emoji:"🌿",type:"mountain",
+   img:"photo-1544161515-4ab6ce6db874",
+   desc:"Rolling tea gardens, misty hills and spectacular scenic beauty at every turn.",
+   rating:4.6,season:"Sep–May",seasonKey:"winter",bestFor:"Couples, Nature Lovers, Trekkers",
+   language:"Malayalam, Tamil",food:"Appam with Stew, Idiyappam, Puttu, Masala Tea",
+   clothing:"Light Cotton, Saree, Casuals for trekking",
+   history:"Munnar's tea industry began with the British East India Company in 1880. The name comes from the confluence of three rivers. Today the Kanan Devan Hills Plantation covers over 30,000 hectares.",
+   tags:["Tea Gardens","Mist","Trekking","Eravikulam NP"],
+   hotels:[{name:"Windermere Estate",type:"HERITAGE",stars:4,price:"₹8,000/night"},{name:"Tea Valley Resort",type:"DELUXE",stars:4,price:"₹5,000/night"},{name:"KTDC Cottages",type:"STANDARD",stars:3,price:"₹2,500/night"},{name:"Munnar Hostel",type:"HOSTEL",stars:2,price:"₹500/night"}]},
+  {id:12,name:"Rann of Kutch",state:"Gujarat",emoji:"🌅",type:"adventure",
+   img:"photo-1477959858617-67f85cf4f1df",
+   desc:"World's largest salt desert — pure white landscape stretching to the infinite horizon.",
+   rating:4.7,season:"Oct–Feb",seasonKey:"winter",bestFor:"Photographers, Culture Lovers, Families",
+   language:"Gujarati, Kutchi",food:"Dhokla, Thepla, Undhiyu, Dabeli",
+   clothing:"Bandhani fabric, Mirror-work embroidery, Ajrakh prints",
+   history:"The Rann of Kutch was a Harappan civilization settlement over 5,000 years ago. Dholavira, one of the five largest Harappan cities, is a UNESCO World Heritage Site. The Kutchi people maintain rich traditions of embroidery, brasswork, and block printing.",
+   tags:["Salt Desert","Photography","Rann Utsav","UNESCO"],
+   hotels:[{name:"Rann Riders",type:"LUXURY",stars:4,price:"₹18,000/night"},{name:"Tent City Rann",type:"GLAMPING",stars:3,price:"₹8,000/night"},{name:"Bhuj Hotel",type:"STANDARD",stars:3,price:"₹2,500/night"},{name:"Desert Hostel",type:"HOSTEL",stars:2,price:"₹700/night"}]},
+  {id:13,name:"Kashmir Valley",state:"Jammu & Kashmir",emoji:"🌸",type:"mountain",
+   img:"photo-1605649461884-18fc3a466b44",
+   desc:"Paradise on Earth — snow-capped peaks, shikara rides on Dal Lake & blooming tulip gardens.",
+   rating:4.9,season:"Mar–Oct",seasonKey:"summer",bestFor:"Couples, Photographers, Nature Lovers",
+   language:"Kashmiri, Urdu, Dogri",food:"Wazwan (36-course feast), Rogan Josh, Yakhni, Kahwa",
+   clothing:"Pashmina Shawl, Phiran (traditional long robe), Kangri attire",
+   history:"Kashmir has been called 'Paradise on Earth' since Mughal Emperor Jahangir. The valley was a major center of Hindu and Buddhist learning for 2,000+ years. The Mughals built stunning gardens — Shalimar Bagh, Nishat Bagh — along Dal Lake. Pashmina weaving tradition is over 600 years old.",
+   tags:["Dal Lake","Shikara","Tulip Garden","Pashmina","Snow"],
+   hotels:[{name:"The Khyber Himalayan Resort",type:"LUXURY",stars:5,price:"₹35,000/night"},{name:"Lalit Grand Palace",type:"HERITAGE",stars:5,price:"₹22,000/night"},{name:"Houseboat New Broadway",type:"HOUSEBOAT",stars:4,price:"₹8,000/night"},{name:"Dal View Hostel",type:"HOSTEL",stars:2,price:"₹600/night"}]},
+  {id:14,name:"Gorakhpur",state:"Uttar Pradesh",emoji:"🛕",type:"spiritual",
+   img:"photo-1537565832527-5b4fe94aa655",
+   desc:"Birthplace gateway of Lord Buddha — home to the iconic Gorakhnath Temple.",
+   rating:4.3,season:"Oct–Mar",seasonKey:"winter",bestFor:"Pilgrims, History Buffs, Families",
+   language:"Hindi, Bhojpuri, Awadhi",food:"Khichdi (Gorakhnath Prasad), Litti Chokha, Chura Matar",
+   clothing:"Cotton Dhoti Kurta, Saree, Casual Indian wear",
+   history:"The Gorakhnath Temple, dedicated to saint Gorakshanath, has been a center of Hindu monasticism for nearly 1,000 years. Close to Kushinagar where Lord Buddha attained Mahaparinirvana. The Gita Press, the world's largest publisher of Hindu scriptures, was founded here in 1923.",
+   tags:["Gorakhnath Temple","Buddhist Circuit","Gita Press","Kushinagar"],
+   hotels:[{name:"Ramada by Wyndham",type:"DELUXE",stars:4,price:"₹4,500/night"},{name:"Hotel Ganges",type:"STANDARD",stars:3,price:"₹2,200/night"},{name:"Clark Inn",type:"STANDARD",stars:3,price:"₹1,800/night"},{name:"Gorakhpur Hostel",type:"HOSTEL",stars:2,price:"₹450/night"}]},
+  {id:15,name:"Lucknow",state:"Uttar Pradesh",emoji:"🏰",type:"heritage",
+   img:"photo-1574618072796-b88f27b20a3d",
+   desc:"City of Nawabs — exquisite Awadhi cuisine, graceful tehzeeb & grand Mughal-era monuments.",
+   rating:4.6,season:"Oct–Mar",seasonKey:"winter",bestFor:"Food Lovers, History Buffs, Culture Seekers",
+   language:"Hindi, Urdu, Awadhi",food:"Tunday Kababi, Lucknawi Biryani, Nihari, Sheermal, Basket Chaat",
+   clothing:"Chikankari Kurta (GI-tagged), Sherwani, Lucknawi Silk Saree",
+   history:"Lucknow served as the capital of the Nawabs of Awadh during the 18th–19th centuries. The Bara Imambara (1784) with its famous Bhul-Bhulaiya labyrinth is a stunning example of Awadhi architecture. Lucknow's Chikankari embroidery, over 400 years old, is a UNESCO-recognized craft.",
+   tags:["Nawabi Culture","Awadhi Cuisine","Chikankari","Imambara","1857"],
+   hotels:[{name:"Taj Mahal Lucknow",type:"LUXURY",stars:5,price:"₹14,000/night"},{name:"Lebua Lucknow",type:"LUXURY",stars:5,price:"₹12,000/night"},{name:"Piccadily Hotel",type:"DELUXE",stars:4,price:"₹5,500/night"},{name:"Lucknow Hostel",type:"HOSTEL",stars:2,price:"₹500/night"}]},
+];
+
+const CULTURE=[
+  {cat:"food",emoji:"🍛",name:"Hyderabadi Biryani",state:"Telangana / Hyderabad",text:"Fragrant basmati rice layered with spiced meat and fried onions, slow-cooked in a sealed pot (dum). A Mughal royal recipe perfected by the Nizams of Hyderabad over 400 years."},
+  {cat:"food",emoji:"🫓",name:"Masala Dosa",state:"Tamil Nadu / Karnataka",text:"Crispy fermented rice-lentil crepe wrapped around spiced potato filling. Served with coconut chutney and sambar. A breakfast staple of South India now beloved worldwide."},
+  {cat:"food",emoji:"🍲",name:"Dal Baati Churma",state:"Rajasthan",text:"Sun-baked wheat balls served with five-lentil dal and sweet churma. The quintessential Rajasthani warrior food."},
+  {cat:"food",emoji:"🥘",name:"Rogan Josh",state:"Kashmir",text:"Slow-cooked Kashmiri lamb curry with aromatic spices and dried cockscomb flower giving its signature crimson hue. A Persian-origin dish perfected in the Mughal royal kitchen."},
+  {cat:"food",emoji:"🍜",name:"Thukpa",state:"Ladakh / Arunachal Pradesh",text:"Hearty Tibetan noodle soup loaded with vegetables. Essential winter comfort food of the high Himalayas."},
+  {cat:"food",emoji:"🎂",name:"Modak",state:"Maharashtra",text:"Sacred steamed sweet dumplings filled with coconut and jaggery, offered to Lord Ganesha during Ganesh Chaturthi."},
+  {cat:"language",emoji:"🔤",name:"Hindi",state:"North & Central India",text:"Spoken by over 600 million people. India's most widely understood language with roots in Sanskrit. Official language of 9 Indian states."},
+  {cat:"language",emoji:"📜",name:"Tamil",state:"Tamil Nadu / Sri Lanka",text:"One of the world's longest surviving classical languages with a literary tradition spanning 2,000+ years. Tamil Sangam literature is among the oldest secular literature in the world."},
+  {cat:"language",emoji:"🗣️",name:"Bengali",state:"West Bengal / Bangladesh",text:"Language of Rabindranath Tagore, Nobel laureate. Over 230 million speakers — the 7th most spoken language in the world."},
+  {cat:"language",emoji:"📖",name:"Sanskrit",state:"Pan-India (sacred)",text:"Mother of many Indian languages. Sacred language of Hindu, Buddhist and Jain scriptures with the world's oldest extensive grammar by Pāṇini (4th century BCE)."},
+  {cat:"clothing",emoji:"👗",name:"Banarasi Silk Saree",state:"Varanasi, Uttar Pradesh",img:"1610189352649-01b70a462bd5",text:"Woven with real gold and silver zari thread, Banarasi sarees take up to 6 months to create. A quintessential Indian bridal garment."},
+  {cat:"clothing",emoji:"👘",name:"Phulkari Dupatta",state:"Punjab",img:"1583391733956-3750e0ff4e8b",text:"Vibrant embroidered shawl with dense floral motifs — 'phulkari' means flower craft. A 500-year-old tradition."},
+  {cat:"clothing",emoji:"🧣",name:"Pashmina Shawl",state:"Kashmir",img:"1520813792240-956fc709e4f4",text:"Ultra-fine wool from the Changthangi goat. One of the world's most expensive natural fibres, prized globally for warmth."},
+  {cat:"clothing",emoji:"🪡",name:"Kanjeevaram Silk",state:"Tamil Nadu",img:"1594736797933-d0501ba2fe65",text:"Heavy silk saree woven with pure mulberry silk threads and zari. A GI-tagged product of Kanchipuram, considered a family heirloom."},
+  {cat:"clothing",emoji:"🎨",name:"Chikankari Kurta",state:"Lucknow, Uttar Pradesh",img:"1558618666-fcd25c85cd64",text:"Delicate hand-embroidered fabric from Lucknow with origins in the Mughal court. Over 36 different embroidery stitches. A GI-tagged craft over 400 years old."},
+  {cat:"clothing",emoji:"🧵",name:"Bandhani Saree",state:"Rajasthan / Gujarat",img:"1583391733956-3750e0ff4e8b",text:"Tie-and-dye textile made by tying thousands of tiny dots on fabric before dyeing. Creates mesmerizing patterns in vivid colors."},
+  {cat:"festival",emoji:"🎆",name:"Diwali",state:"Pan-India",text:"The Festival of Lights, celebrating the return of Lord Rama to Ayodhya. Homes adorned with earthen lamps (diyas), rangoli designs and fireworks."},
+  {cat:"festival",emoji:"🌈",name:"Holi",state:"Mathura, Barsana — celebrated everywhere",text:"Festival of Colors celebrating spring and the divine love of Radha-Krishna. Vibrant colored powders turn cities into a carnival."},
+  {cat:"festival",emoji:"🐘",name:"Onam",state:"Kerala",text:"Kerala's grand harvest festival in honor of King Mahabali. Celebrated with snake boat races, Pookalam flower carpets, and a 26-dish feast."},
+  {cat:"festival",emoji:"🪔",name:"Navratri & Garba",state:"Gujarat (nationwide)",text:"Nine nights of dancing the Garba in honor of Goddess Durga. Ahmedabad's Garba is now UNESCO-recognized Intangible Cultural Heritage."},
+];
+
+const MALLS=[
+  {name:"Select CITYWALK",city:"New Delhi",state:"Delhi",type:"PREMIUM",img:"1555529669-e69e7aa0ba9a",link:"https://selectcitywalk.com",desc:"Delhi's most iconic premium mall with luxury brands, gourmet dining and live events in Saket.",shops:"180+ stores",anchor:"Zara, H&M, Apple, Uniqlo, PVR",timing:"11 AM – 11 PM"},
+  {name:"DLF Mall of India",city:"Noida",state:"Uttar Pradesh",type:"MEGA MALL",img:"1519566335946-e6f65f0f4fdf",link:"https://mallofindia.in",desc:"India's largest mall with 5 entertainment zones and 330+ brands across 7 floors.",shops:"330+ stores",anchor:"Lifestyle, Marks & Spencer, IMAX, Hamleys",timing:"10 AM – 10 PM"},
+  {name:"Phoenix Palassio",city:"Lucknow",state:"Uttar Pradesh",type:"LUXURY",img:"1481437156560-3205f6a55735",link:"https://www.thephoenixmills.com/",desc:"Lucknow's most luxurious retail destination with premium fashion and fine dining.",shops:"200+ stores",anchor:"H&M, Zara, Cinepolis, Max Fashion",timing:"10 AM – 10 PM"},
+  {name:"Lulu Mall",city:"Kochi & Lucknow",state:"Kerala / UP",type:"MEGA MALL",img:"1567449297875-c94a165e5e1e",link:"https://www.lulumall.in/",desc:"A global retail giant with massive hypermarkets, fashion brands and entertainment zones.",shops:"250+ stores",anchor:"LuLu Hypermarket, Lifestyle, PVR",timing:"10 AM – 10:30 PM"},
+  {name:"Ambience Mall",city:"Gurugram",state:"Haryana",type:"LUXURY",img:"1487088088716-30de1ba74fbc",link:"https://www.ambiencemall.com/",desc:"North India's largest mall housing global luxury brands and a world-class multiplex.",shops:"270+ stores",anchor:"Louis Vuitton, Gucci, Hard Rock Cafe",timing:"10 AM – 10 PM"},
+  {name:"Phoenix Marketcity",city:"Mumbai",state:"Maharashtra",type:"PREMIUM",img:"1528360983277-13d401cdc186",link:"https://www.thephoenixmills.com/",desc:"Mumbai's vibrant shopping hub in Kurla with international labels and lively food court.",shops:"300+ stores",anchor:"Zara, Adidas, INOX, Hard Rock Cafe",timing:"11 AM – 11 PM"},
+  {name:"Inorbit Mall",city:"Hyderabad",state:"Telangana",type:"LIFESTYLE",img:"1441986300917-64674bd600d8",link:"https://www.inorbitmalls.com/",desc:"Hyderabad's premier lifestyle destination with curated international brands.",shops:"150+ stores",anchor:"Marks & Spencer, Gap, PVR",timing:"10 AM – 10 PM"},
+  {name:"Pacific Mall",city:"Delhi",state:"Delhi",type:"FAMILY",img:"1558618666-fcd25c85cd64",link:"https://www.pacificmalls.in/",desc:"Family-friendly mega mall with one of Delhi's largest gaming zones and food courts.",shops:"200+ stores",anchor:"H&M, Lifestyle, Big Cinemas, GameZone",timing:"10 AM – 10:30 PM"},
+  {name:"Palladium Mumbai",city:"Lower Parel, Mumbai",state:"Maharashtra",type:"ULTRA LUXURY",img:"1555529669-e69e7aa0ba9a",link:"https://www.thephoenixmills.com/",desc:"Mumbai's most exclusive luxury destination with India's finest designer labels.",shops:"100+ stores",anchor:"Burberry, Michael Kors, Jimmy Choo",timing:"11 AM – 11 PM"},
+  {name:"Vegas Mall",city:"Dwarka, Delhi",state:"Delhi",type:"ENTERTAINMENT",img:"1519566335946-e6f65f0f4fdf",link:"https://www.vegasmall.in/",desc:"West Delhi's largest shopping and entertainment destination with a massive food court.",shops:"180+ stores",anchor:"Big Bazaar, Cinemax, Fun City",timing:"10 AM – 10 PM"},
+];
+
+// ═══ HOTEL HELPERS ═══
+function getHotelImg(type){const m={LUXURY:'1566073771259-6a8506099945',PALACE:'1551882547-ff40c599fb10',HERITAGE:'1587474260584-136574297316',DELUXE:'1520250497591-112f2f40a3f4',RESORT:'1582719508461-905c673771fd',STANDARD:'1631049307264-da0ec9d70304',BUDGET:'1555854877-bab0e564b8d5',HOSTEL:'1555854877-bab0e564b8d5',HOUSEBOAT:'1571896349842-33c89424de2d',GLAMPING:'1504280390367-361c6d9f38f4',ECO:'1441986300917-64674bd600d8',BOUTIQUE:'1578683010236-d716f9a3f461'};return`https://images.unsplash.com/photo-${m[type]||m.STANDARD}?auto=format&fit=crop&w=400&q=75`;}
+function getBookingLink(type){const m={LUXURY:'https://www.tajhotels.com/',PALACE:'https://www.tajhotels.com/',HERITAGE:'https://www.booking.com/',DELUXE:'https://www.booking.com/',RESORT:'https://www.goibibo.com/hotels/',STANDARD:'https://www.makemytrip.com/hotels/',HOSTEL:'https://www.hostelworld.com/',HOUSEBOAT:'https://www.airbnb.co.in/',GLAMPING:'https://www.airbnb.co.in/',ECO:'https://www.booking.com/',BOUTIQUE:'https://www.booking.com/'};return m[type]||'https://www.makemytrip.com/hotels/';}
+function getImgUrl(id,w=600){return`https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=80`;}
+
+// ═══ ADMIN AUTH ═══
+let adminLoggedIn=false;
+function doAdminLogin(){
+  const u=document.getElementById('adminUser').value.trim(),p=document.getElementById('adminPass').value,err=document.getElementById('adminLoginError');
+  if(u==='Somaiyya'&&p==='somaiyya123'){err.style.display='none';adminLoggedIn=true;showToast('🛡️ Welcome Somaiyya! Access granted.','✅');goPage('admin');}
+  else{err.style.display='block';document.getElementById('adminPass').value='';}
+}
+function adminLogout(){adminLoggedIn=false;document.getElementById('adminUser').value='';document.getElementById('adminPass').value='';showToast('Logged out of admin panel','🔓');goPage('home');}
+
+// ═══ NAVIGATION ═══
+function goPage(id){
+  if(id==='admin'&&!adminLoggedIn){goPage('adminlogin');return;}
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-links a').forEach(a=>{if(a.getAttribute('onclick')&&a.getAttribute('onclick').includes("'"+id+"'"))a.classList.add('active');});
+  window.scrollTo(0,0);
+  setTimeout(initReveal,100);
+  if(id==='explore')renderExplore();
+  if(id==='culture')renderCulture('all');
+  if(id==='shopping')renderMalls();
+  if(id==='admin')renderAdmin('overview');
+}
+
+// ═══ HERO SLIDER ═══
+const HERO_SLIDES=[
+  {img:'photo-1564507592333-c60657eea523',caption:'Taj Mahal, Agra'},
+  {img:'photo-1605649461884-18fc3a466b44',caption:'Kashmir Valley'},
+  {img:'photo-1524492412937-b28074a5d7da',caption:'Rajasthan Forts'},
+  {img:'photo-1561361058-c24cecae35ca',caption:'Varanasi Ghats'},
+  {img:'photo-1544161515-4ab6ce6db874',caption:'Munnar Tea Gardens'},
+  {img:'photo-1583417319070-4a69db38a482',caption:'Andaman Islands'},
+];
+let heroIdx=0;
+(function initHero(){
+  const slider=document.getElementById('heroBgSlider'),dots=document.getElementById('heroDots');
+  HERO_SLIDES.forEach((s,i)=>{
+    const div=document.createElement('div');
+    div.className='hero-slide'+(i===0?' active':'');
+    div.style.backgroundImage=`url(https://images.unsplash.com/${s.img}?auto=format&fit=crop&w=1600&q=85)`;
+    slider.appendChild(div);
+    const dot=document.createElement('div');dot.className='hdot'+(i===0?' active':'');
+    dot.onclick=()=>setHeroSlide(i);dots.appendChild(dot);
+  });
+  setInterval(()=>setHeroSlide((heroIdx+1)%HERO_SLIDES.length),5000);
+})();
+function setHeroSlide(i){
+  document.querySelectorAll('.hero-slide').forEach((s,j)=>s.classList.toggle('active',j===i));
+  document.querySelectorAll('.hdot').forEach((d,j)=>d.classList.toggle('active',j===i));
+  heroIdx=i;
+}
+
+// ═══ PARTICLES ═══
+(function(){const p=document.getElementById('heroParticles'),cols=['#FF6B00','#FFC107','#880E4F','#138808','#FF9800'];
+for(let i=0;i<28;i++){const el=document.createElement('div');el.className='particle';const s=Math.random()*4+2;Object.assign(el.style,{left:Math.random()*100+'%',width:s+'px',height:s+'px',background:cols[Math.floor(Math.random()*cols.length)],opacity:Math.random()*0.35+0.1,animationDuration:(Math.random()*14+10)+'s',animationDelay:(Math.random()*10)+'s'});p.appendChild(el);}})();
+
+// ═══ COUNTERS ═══
+function animCount(el,target,suffix=''){let n=0;const step=target/55;const iv=setInterval(()=>{n=Math.min(n+step,target);el.textContent=Math.floor(n).toLocaleString()+suffix;if(n>=target)clearInterval(iv);},30);}
+setTimeout(()=>{animCount(document.getElementById('cnt1'),40);animCount(document.getElementById('cnt2'),500,'+');animCount(document.getElementById('cnt3'),22);animCount(document.getElementById('cnt4'),800,'+');animCount(document.getElementById('cnt5'),5000,'+');},600);
+
+// ═══ SCROLL REVEAL ═══
+function initReveal(){
+  const obs=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});},{threshold:0.12});
+  document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(el=>obs.observe(el));
+}
+initReveal();
+
+// ═══ DESTINATION CARDS ═══
+function renderGrid(container,dests){
+  container.innerHTML='';
+  dests.forEach((d,i)=>{
+    const card=document.createElement('div');
+    card.className='dest-card reveal';
+    card.style.transitionDelay=(i%3*0.1)+'s';
+    card.onclick=()=>openDest(d.id);
+    card.innerHTML=`
+      <div class="dest-img" style="background-image:url(https://images.unsplash.com/${d.img}?auto=format&fit=crop&w=600&q=80);"></div>
+      <div class="dest-overlay"></div>
+      <div class="dest-rating">★ ${d.rating}</div>
+      <span class="dest-badge">${d.type.toUpperCase()}</span>
+      <div class="dest-content">
+        <div class="dest-state">${d.state.toUpperCase()}</div>
+        <div class="dest-name">${d.name}</div>
+        <div class="dest-desc">${d.desc}</div>
+        <div class="tags">${d.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+      </div>`;
+    container.appendChild(card);
+  });
+  setTimeout(initReveal,50);
+}
+renderGrid(document.getElementById('featuredGrid'),DESTS.slice(0,6));
+function filterExplore(type){goPage('explore');document.getElementById('filterType').value=type;renderExplore();}
+function renderExplore(){const t=document.getElementById('filterType').value,s=document.getElementById('filterSeason').value;let f=DESTS;if(t)f=f.filter(d=>d.type===t);if(s)f=f.filter(d=>d.seasonKey===s);renderGrid(document.getElementById('exploreGrid'),f);}
+
+// ═══ MODAL ═══
+function openDest(id){
+  const d=DESTS.find(x=>x.id===id);
+  document.getElementById('modalTitle').textContent=d.emoji+' '+d.name;
+  document.getElementById('modalBody').innerHTML=`
+    <img class="modal-hero-img" src="https://images.unsplash.com/${d.img}?auto=format&fit=crop&w=800&q=85" alt="${d.name}" onerror="this.style.display='none'">
+    <div style="padding:1.5rem 0 0;">
+      <div style="font-size:0.7rem;letter-spacing:2px;color:var(--saffron);font-weight:700;">${d.state.toUpperCase()}</div>
+      <p style="color:var(--text-muted);font-size:0.9rem;margin-top:0.4rem;margin-bottom:1.4rem;">${d.desc}</p>
+    </div>
+    <div class="detail-grid">
+      <div class="info-card">
+        <div class="info-card-lbl">📌 QUICK INFO</div>
+        <div class="info-row"><span class="info-key">Best Season</span><span class="info-val">${d.season}</span></div>
+        <div class="info-row"><span class="info-key">Best For</span><span class="info-val">${d.bestFor}</span></div>
+        <div class="info-row"><span class="info-key">Rating</span><span class="info-val" style="color:var(--gold);">★ ${d.rating}</span></div>
+        <div class="info-row"><span class="info-key">Language</span><span class="info-val" style="font-size:0.78rem;">${d.language}</span></div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-lbl">🍽️ FOOD & CLOTHING</div>
+        <div class="info-row"><span class="info-key">Food</span><span class="info-val" style="font-size:0.77rem;">${d.food}</span></div>
+        <div class="info-row"><span class="info-key">Clothing</span><span class="info-val" style="font-size:0.77rem;">${d.clothing}</span></div>
+        <div style="margin-top:0.8rem;display:flex;flex-wrap:wrap;gap:0.4rem;">${d.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+      </div>
+    </div>
+    <div class="hist-card">
+      <div class="hist-title">📜 History & Heritage</div>
+      <p class="hist-text">${d.history}</p>
+    </div>
+    <div style="margin-bottom:1.5rem;">
+      <div style="font-size:0.68rem;letter-spacing:2px;color:var(--gold);font-weight:700;margin-bottom:1rem;">🏨 HOTELS & HOSTELS</div>
+      <div class="hotel-img-grid">
+        ${d.hotels.map(h=>`<div class="hotel-img-card">
+          <img class="h-img" src="${getHotelImg(h.type)}" alt="${h.name}" loading="lazy" onerror="this.style.display='none'">
+          <div class="h-img-body">
+            <div class="h-type">${h.type}</div>
+            <div class="h-name">${h.name}</div>
+            <div class="h-stars">${'★'.repeat(h.stars)}${'☆'.repeat(5-h.stars)}</div>
+            <div class="h-price">${h.price}</div>
+            <a class="h-book" href="${getBookingLink(h.type)}" target="_blank" rel="noopener">📅 Book Now →</a>
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <button class="btn-primary" style="width:100%;" onclick="showToast('💖 Added to your wishlist!','⭐')">Add to Wishlist</button>`;
+  document.getElementById('destModal').classList.add('show');
+}
+function closeModal(){document.getElementById('destModal').classList.remove('show');}
+document.getElementById('destModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+
+// ═══ CULTURE ═══
+function renderCulture(cat){
+  const d=cat==='all'?CULTURE:CULTURE.filter(c=>c.cat===cat);
+  document.getElementById('cultureGrid').innerHTML=d.map(c=>{
+    const hasImg=c.cat==='clothing'&&c.img;
+    return`<div class="culture-card reveal">
+      <div class="culture-header${hasImg?' with-img':''}">
+        ${hasImg?`<img class="cloth-hero-img" src="https://images.unsplash.com/photo-${c.img}?auto=format&fit=crop&w=600&q=80" alt="${c.name}" loading="lazy" onerror="this.parentElement.innerHTML='<div style=\\"font-size:3.2rem;padding:2rem 0;text-align:center;\\">${c.emoji}</div>'">`:c.emoji}
+      </div>
+      <div class="culture-body">
+        <div class="culture-title">${c.name}</div>
+        <div class="culture-state">${c.state.toUpperCase()}</div>
+        <div class="culture-text">${c.text}</div>
+      </div>
+    </div>`;
+  }).join('');
+  setTimeout(initReveal,50);
+}
+
+// ═══ MALLS ═══
+function renderMalls(){
+  document.getElementById('mallGrid').innerHTML=MALLS.map((m,i)=>`
+    <div class="mall-card reveal" style="transition-delay:${i%3*0.1}s">
+      <img class="mall-img" src="https://images.unsplash.com/photo-${m.img}?auto=format&fit=crop&w=600&q=80" alt="${m.name}" loading="lazy" onerror="this.style.display='none'">
+      <div class="mall-body">
+        <div class="mall-type">${m.type}</div>
+        <div class="mall-name">${m.name}</div>
+        <div class="mall-city">📍 ${m.city}, ${m.state}</div>
+        <div class="mall-desc">${m.desc}</div>
+        <div class="mall-row"><span class="mall-lbl">🏪</span><span>${m.shops}</span></div>
+        <div class="mall-row"><span class="mall-lbl">⭐</span><span>${m.anchor}</span></div>
+        <div class="mall-row"><span class="mall-lbl">🕐</span><span>${m.timing}</span></div>
+        <a class="mall-link" href="${m.link}" target="_blank" rel="noopener">🛍️ Visit Mall Website →</a>
+      </div>
+    </div>`).join('');
+  setTimeout(initReveal,50);
+}
+
+// ═══ AI RECOMMENDER ═══
+const TYPE_MAP={Adventure:['adventure','mountain','beach'],Cultural:['heritage','spiritual'],Relaxation:['beach'],Spiritual:['spiritual','heritage'],Wildlife:['wildlife'],Beach:['beach'],Mountain:['mountain','adventure']};
+function runML(){
+  const btn=document.getElementById('mlBtn');
+  btn.innerHTML='<span class="spinner"></span> Running ML Algorithm...';btn.disabled=true;
+  setTimeout(()=>{
+    const types=TYPE_MAP[document.getElementById('pType').value]||['heritage'];
+    const scored=DESTS.map(d=>{let sc=d.rating;if(types.includes(d.type))sc+=0.85;sc+=Math.random()*0.25;return{...d,conf:Math.min(99,(sc/6.1*100)).toFixed(1),sc};}).sort((a,b)=>b.sc-a.sc).slice(0,4);
+    document.getElementById('recList').innerHTML=scored.map((d,i)=>`
+      <div class="rec-card" onclick="openDest(${d.id})" style="animation:fadeUp 0.5s ${i*0.1}s ease both;">
+        <img class="rec-img" src="https://images.unsplash.com/${d.img}?auto=format&fit=crop&w=120&q=75" alt="${d.name}" onerror="this.style.display='none'">
+        <div class="rec-info">
+          <div class="rec-name">#${i+1} ${d.name}</div>
+          <div class="rec-detail">${d.state} · ${d.type.toUpperCase()} · Best: ${d.season}</div>
+          <div style="display:flex;gap:0.4rem;margin-top:0.4rem;flex-wrap:wrap;">${d.tags.slice(0,3).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+        </div>
+        <div class="rec-score"><div class="score-num">${d.conf}%</div><div class="score-lbl">MATCH</div></div>
+      </div>`).join('');
+    document.getElementById('recResults').classList.add('show');
+    btn.innerHTML='🚀 Generate AI Recommendations';btn.disabled=false;
+    showToast('🤖 IndiTour AI found your top matches!','🎯');
+  },1800);
+}
+
+// ═══ AUTH ═══
+function doLogin(){const e=document.getElementById('loginEmail').value,p=document.getElementById('loginPass').value;if(!e||!p){showToast('Please fill in all fields','⚠️');return;}if(!e.includes('@')){showToast('Enter a valid email','⚠️');return;}showToast('🎉 Welcome back, Explorer!','✅');setTimeout(()=>goPage('home'),1000);}
+function doRegister(){const f=document.getElementById('regFirst').value,l=document.getElementById('regLast').value,e=document.getElementById('regEmail').value,p=document.getElementById('regPass').value,terms=document.getElementById('regTerms').checked,dob=document.getElementById('regDob').value;if(!f||!l||!e||!p){showToast('Please fill in all required fields','⚠️');return;}if(!terms){showToast('Please accept the Terms of Service','⚠️');return;}let msg=`🌏 Account created! Welcome ${f}!`;if(dob){const age=Math.floor((new Date()-new Date(dob))/(1000*60*60*24*365.25));msg=`🌏 Welcome ${f}! Age: ${age}`;}showToast(msg,'✅');setTimeout(()=>goPage('login'),1200);}
+
+// ═══ ADMIN ═══
+function adminTab(tab,el){document.querySelectorAll('.a-menu-item').forEach(i=>i.classList.remove('active'));if(el)el.classList.add('active');renderAdmin(tab);}
+function renderAdmin(tab){
+  const main=document.getElementById('adminMain');
+  const today=new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  if(tab==='overview'){
+    main.innerHTML=`<div class="admin-hdr"><h2 class="admin-title">Dashboard Overview</h2><div style="font-size:0.8rem;color:var(--text-muted);">📅 ${today}</div></div>
+    <div class="a-stat-grid">
+      <div class="a-stat-card"><div class="a-stat-icon">🗺️</div><div class="a-stat-num">${DESTS.length}</div><div class="a-stat-lbl">Total Destinations</div></div>
+      <div class="a-stat-card"><div class="a-stat-icon">👥</div><div class="a-stat-num">24,891</div><div class="a-stat-lbl">Registered Users</div></div>
+      <div class="a-stat-card"><div class="a-stat-icon">🏨</div><div class="a-stat-num">${DESTS.reduce((a,d)=>a+d.hotels.length,0)}</div><div class="a-stat-lbl">Hotels & Hostels</div></div>
+      <div class="a-stat-card"><div class="a-stat-icon">🛍️</div><div class="a-stat-num">${MALLS.length}</div><div class="a-stat-lbl">Shopping Malls</div></div>
+      <div class="a-stat-card"><div class="a-stat-icon">🤖</div><div class="a-stat-num">96.8%</div><div class="a-stat-lbl">ML Accuracy</div></div>
+    </div>
+    <div style="font-size:0.7rem;letter-spacing:1.5px;color:var(--gold);font-weight:700;margin-bottom:1rem;">RECENT BOOKINGS</div>
+    <div class="a-table-wrap"><table class="a-table"><thead><tr><th>USER</th><th>DESTINATION</th><th>DATE</th><th>BUDGET</th><th>STATUS</th></tr></thead>
+    <tbody>${[['Priya Sharma','Goa Beaches','12 Jan 2025','₹45,000','active'],['Rahul Verma','Taj Mahal','15 Jan 2025','₹12,000','active'],['Anjali Singh','Kashmir Valley','20 Feb 2025','₹85,000','pending'],['Vikram Patel','Kerala Backwaters','05 Mar 2025','₹60,000','active'],['Meera Nair','Rajasthan Forts','18 Mar 2025','₹95,000','pending'],['Arjun Reddy','Ladakh','02 Apr 2025','₹70,000','active'],['Kavya Menon','Lucknow','18 Apr 2025','₹25,000','active']].map(r=>`<tr><td style="font-weight:700;">${r[0]}</td><td>${r[1]}</td><td style="color:var(--text-muted);">${r[2]}</td><td style="color:var(--gold);font-weight:700;">${r[3]}</td><td><span class="badge b-${r[4]}">${r[4].toUpperCase()}</span></td></tr>`).join('')}</tbody></table></div>`;
+  } else if(tab==='destinations'){
+    main.innerHTML=`<div class="admin-hdr"><h2 class="admin-title">Manage Destinations</h2><button class="btn-primary" style="padding:0.5rem 1.2rem;font-size:0.84rem;" onclick="showToast('+ New destination form ready!','✅')">+ Add Destination</button></div>
+    <div class="a-table-wrap"><table class="a-table"><thead><tr><th>IMAGE</th><th>NAME</th><th>STATE</th><th>TYPE</th><th>RATING</th><th>ACTIONS</th></tr></thead>
+    <tbody>${DESTS.map(d=>`<tr><td><img src="https://images.unsplash.com/${d.img}?auto=format&fit=crop&w=80&q=60" style="width:50px;height:36px;object-fit:cover;border-radius:5px;"></td><td style="font-weight:700;">${d.name}</td><td style="color:var(--text-muted);font-size:0.82rem;">${d.state}</td><td><span class="tag">${d.type.toUpperCase()}</span></td><td style="color:var(--gold);font-weight:700;">★ ${d.rating}</td><td><button onclick="openDest(${d.id})" style="background:rgba(255,193,7,0.1);border:1px solid var(--border-glow);border-radius:6px;padding:0.22rem 0.6rem;color:var(--gold);cursor:pointer;font-size:0.75rem;font-weight:700;">View</button></td></tr>`).join('')}</tbody></table></div>`;
+  } else if(tab==='users'){
+    main.innerHTML=`<div class="admin-hdr"><h2 class="admin-title">User Management</h2><button class="btn-primary" style="padding:0.5rem 1.2rem;font-size:0.84rem;" onclick="showToast('Exporting...','📋')">Export CSV</button></div>
+    <div class="a-table-wrap"><table class="a-table"><thead><tr><th>NAME</th><th>EMAIL</th><th>PREFERENCE</th><th>JOINED</th><th>TRIPS</th><th>STATUS</th></tr></thead>
+    <tbody>${[['Priya Sharma','priya@gmail.com','Adventure','Jan 2024','5','active'],['Rahul Verma','rahul@yahoo.com','Cultural','Feb 2024','3','active'],['Anjali Singh','anjali@email.com','Beach','Mar 2024','7','active'],['Vikram Patel','vikram@gmail.com','Wildlife','Nov 2023','2','active'],['Meera Nair','meera@hotmail.com','Luxury','Dec 2023','12','active'],['Arjun Reddy','arjun@gmail.com','Mountain','Apr 2024','1','pending'],['Kavya Menon','kavya@email.com','Spiritual','Jan 2024','4','inactive']].map(r=>`<tr><td style="font-weight:700;">${r[0]}</td><td style="color:var(--text-muted);font-size:0.8rem;">${r[1]}</td><td><span class="tag">${r[2]}</span></td><td style="color:var(--text-muted);">${r[3]}</td><td style="color:var(--gold);font-weight:700;">${r[4]}</td><td><span class="badge b-${r[5]}">${r[5].toUpperCase()}</span></td></tr>`).join('')}</tbody></table></div>`;
+  } else if(tab==='hotels'){
+    const all=DESTS.flatMap(d=>d.hotels.map(h=>({...h,dest:d.name})));
+    main.innerHTML=`<div class="admin-hdr"><h2 class="admin-title">Hotels & Hostels</h2><button class="btn-primary" style="padding:0.5rem 1.2rem;font-size:0.84rem;" onclick="showToast('+ Add listing!','✅')">+ Add Listing</button></div>
+    <div class="a-table-wrap"><table class="a-table"><thead><tr><th>IMAGE</th><th>NAME</th><th>DESTINATION</th><th>STARS</th><th>TYPE</th><th>PRICE</th><th>BOOK</th></tr></thead>
+    <tbody>${all.map(h=>`<tr><td><img src="${getHotelImg(h.type)}" style="width:50px;height:36px;object-fit:cover;border-radius:5px;"></td><td style="font-weight:700;">${h.name}</td><td>${h.dest}</td><td style="color:var(--gold);">${'★'.repeat(h.stars)}</td><td><span class="tag">${h.type}</span></td><td style="color:var(--gold);font-weight:700;">${h.price}</td><td><a href="${getBookingLink(h.type)}" target="_blank" style="color:var(--saffron);font-size:0.76rem;font-weight:700;text-decoration:none;">Book →</a></td></tr>`).join('')}</tbody></table></div>`;
+  } else if(tab==='malls'){
+    main.innerHTML=`<div class="admin-hdr"><h2 class="admin-title">Shopping Malls</h2><button class="btn-primary" style="padding:0.5rem 1.2rem;font-size:0.84rem;" onclick="showToast('+ Add mall!','✅')">+ Add Mall</button></div>
+    <div class="a-table-wrap"><table class="a-table"><thead><tr><th>IMAGE</th><th>MALL</th><th>CITY</th><th>TYPE</th><th>SHOPS</th><th>LINK</th></tr></thead>
+    <tbody>${MALLS.map(m=>`<tr><td><img src="https://images.unsplash.com/photo-${m.img}?auto=format&fit=crop&w=80&q=60" style="width:50px;height:36px;object-fit:cover;border-radius:5px;"></td><td style="font-weight:700;">${m.name}</td><td>${m.city}</td><td><span class="tag">${m.type}</span></td><td style="color:var(--text-muted);">${m.shops}</td><td><a href="${m.link}" target="_blank" style="color:var(--saffron);font-size:0.76rem;font-weight:700;text-decoration:none;">Visit →</a></td></tr>`).join('')}</tbody></table></div>`;
+  } else if(tab==='ml'){
+    main.innerHTML=`<div class="admin-hdr"><h2 class="admin-title">ML Model Dashboard</h2></div>
+    <div class="a-stat-grid">
+      <div class="a-stat-card"><div class="a-stat-icon">🧠</div><div class="a-stat-num">4</div><div class="a-stat-lbl">Active Models</div></div>
+      <div class="a-stat-card"><div class="a-stat-icon">📊</div><div class="a-stat-num">2.4M</div><div class="a-stat-lbl">Training Samples</div></div>
+      <div class="a-stat-card"><div class="a-stat-icon">⚡</div><div class="a-stat-num">45ms</div><div class="a-stat-lbl">Avg Response</div></div>
+      <div class="a-stat-card"><div class="a-stat-icon">🎯</div><div class="a-stat-num">96.8%</div><div class="a-stat-lbl">Best Accuracy</div></div>
+    </div>
+    <div class="a-table-wrap"><table class="a-table"><thead><tr><th>MODEL</th><th>ALGORITHM</th><th>ACCURACY</th><th>STATUS</th></tr></thead>
+    <tbody>${[['Neural Hybrid','Deep Learning Ensemble','96.8%'],['Collaborative Filter','Matrix Factorization','94.2%'],['Content-Based','TF-IDF + Cosine Similarity','91.7%'],['KNN Recommender','K-Nearest Neighbors','89.4%']].map(r=>`<tr><td style="font-weight:700;">${r[0]}</td><td style="color:var(--text-muted);">${r[1]}</td><td style="color:var(--gold);font-weight:700;">${r[2]}</td><td><span class="badge b-active">ACTIVE</span></td></tr>`).join('')}</tbody></table></div>`;
+  } else if(tab==='analytics'){
+    main.innerHTML=`<div class="admin-hdr"><h2 class="admin-title">Analytics Dashboard</h2></div>
+    <div class="a-stat-grid">
+      <div class="a-stat-card"><div class="a-stat-icon">📈</div><div class="a-stat-num">+34%</div><div class="a-stat-lbl">Traffic Growth MoM</div></div>
+      <div class="a-stat-card"><div class="a-stat-icon">🔍</div><div class="a-stat-num">1.2M</div><div class="a-stat-lbl">Searches / Month</div></div>
+      <div class="a-stat-card"><div class="a-stat-icon">💰</div><div class="a-stat-num">₹8.4Cr</div><div class="a-stat-lbl">Booking Revenue</div></div>
+      <div class="a-stat-card"><div class="a-stat-icon">😊</div><div class="a-stat-num">4.7/5</div><div class="a-stat-lbl">User Satisfaction</div></div>
+    </div>
+    <div style="background:var(--card-bg);border:1px solid var(--border-glow);border-radius:14px;padding:1.5rem;">
+      <div style="font-size:0.7rem;letter-spacing:1.5px;color:var(--gold);font-weight:700;margin-bottom:1.5rem;">📊 TOP SEARCHED DESTINATIONS</div>
+      ${[['Kashmir Valley',92],['Goa Beaches',89],['Rajasthan Forts',76],['Kerala Backwaters',72],['Ladakh',68],['Lucknow',55]].map(([n,p])=>`<div style="margin-bottom:1.1rem;"><div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:0.35rem;"><span style="font-weight:700;">${n}</span><span style="color:var(--gold);font-weight:700;">${p}%</span></div><div class="bar-track"><div class="bar-fill" style="width:${p}%;"></div></div></div>`).join('')}
+    </div>`;
+  } else if(tab==='db'){
+    main.innerHTML=`<div class="admin-hdr"><h2 class="admin-title">MongoDB Connection</h2></div>
+    <div style="background:var(--card-bg);border:1px solid var(--border-glow);border-radius:14px;padding:1.5rem;margin-bottom:1.5rem;">
+      <div style="display:flex;align-items:center;gap:0.7rem;margin-bottom:1rem;"><div style="width:10px;height:10px;border-radius:50%;background:#4CAF50;box-shadow:0 0 8px #4CAF50;animation:pulse 2s infinite;"></div><span style="font-weight:700;">Connected — MongoDB Atlas (m10 cluster)</span></div>
+      <div class="code-block">Connection: mongodb+srv://inditour-ai.mongodb.net
+Database:   inditour_ai_db
+
+Collections:
+├── destinations   ${DESTS.length} documents
+├── users          24,891 docs
+├── hotels         ${DESTS.reduce((a,d)=>a+d.hotels.length,0)} docs
+├── malls          ${MALLS.length} docs
+├── reviews        89,432 docs
+└── bookings       41,230 docs
+
+Indexes: destination_id, state, type, rating, geo_2dsphere
+Replica: 3 nodes | Backup: Daily automated</div>
+    </div>
+    <div class="a-stat-grid">
+      <div class="a-stat-card"><div class="a-stat-icon">🗄️</div><div class="a-stat-num">158K</div><div class="a-stat-lbl">Total Documents</div></div>
+      <div class="a-stat-card"><div class="a-stat-icon">💾</div><div class="a-stat-num">98MB</div><div class="a-stat-lbl">Storage Used</div></div>
+      <div class="a-stat-card"><div class="a-stat-icon">⚡</div><div class="a-stat-num">12ms</div><div class="a-stat-lbl">Avg Query Latency</div></div>
+      <div class="a-stat-card"><div class="a-stat-icon">🔄</div><div class="a-stat-num">99.9%</div><div class="a-stat-lbl">Uptime SLA</div></div>
+    </div>`;
+  }
+}
+renderAdmin('overview');
+
+// ═══ TOAST ═══
+function showToast(msg,icon='✅'){document.getElementById('toast-msg').textContent=msg;document.getElementById('toast-icon').textContent=icon;const t=document.getElementById('toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3200);}
+</script>
+</body>
+</html>
