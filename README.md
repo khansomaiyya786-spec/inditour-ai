@@ -19,4 +19,4 @@ AI-powered India Travel Platform
 - ML: Scikit-learn · KNN · Deep Learning
 
 ## 👩‍💻 Developer
-Somaiyya Khatoon | MBA Student | Aspiring Data Analyst
+Somaiyya Khatoon | MCA Student | Aspiring Data Analyst / AI/ML and GEN AI DEVLOPER
